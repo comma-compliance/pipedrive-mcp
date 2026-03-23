@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.tsbuildinfo
+coverage/
+test/fixtures/raw/
+test/fixtures/sanitize.mjs
+test/record-fixtures.ts
+BUILD-PLAN.md

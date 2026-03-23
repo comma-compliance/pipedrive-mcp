@@ -1,0 +1,47 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 501,
+      "user_id": 101,
+      "deal_id": 117,
+      "person_id": 201,
+      "org_id": 301,
+      "lead_id": null,
+      "project_id": null,
+      "content": "<p>Discussed pricing and next steps.</p>",
+      "add_time": "2026-03-23 18:45:38",
+      "update_time": "2026-03-23 18:45:38",
+      "active_flag": true,
+      "pinned_to_deal_flag": false,
+      "pinned_to_person_flag": false,
+      "pinned_to_organization_flag": false,
+      "pinned_to_lead_flag": false,
+      "pinned_to_project_flag": false,
+      "last_update_user_id": null,
+      "organization": {
+        "name": "Acme Corp"
+      },
+      "person": {
+        "name": "Jane Smith"
+      },
+      "deal": {
+        "title": "Acme Corp - Enterprise Package Updated"
+      },
+      "lead": null,
+      "user": {
+        "email": "bob@example.com",
+        "name": "Bob Sales",
+        "icon_url": null,
+        "is_you": true
+      }
+    }
+  ],
+  "additional_data": {
+    "pagination": {
+      "start": 0,
+      "limit": 25,
+      "more_items_in_collection": false
+    }
+  }
+}

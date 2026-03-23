@@ -1,0 +1,59 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 6,
+      "name": "Acme Corp",
+      "add_time": "2025-05-11T13:15:17Z",
+      "update_time": "2026-03-23T16:33:26Z",
+      "visible_to": 3,
+      "custom_fields": null,
+      "owner_id": 101,
+      "label_ids": [],
+      "website": null,
+      "linkedin": null,
+      "industry": null,
+      "annual_revenue": null,
+      "employee_count": null,
+      "is_deleted": false,
+      "address": "100 Main Street, Springfield, US"
+    },
+    {
+      "id": 7,
+      "name": "Globex Industries",
+      "add_time": "2025-05-11T13:15:17Z",
+      "update_time": "2026-03-23T16:33:26Z",
+      "visible_to": 3,
+      "custom_fields": null,
+      "owner_id": 101,
+      "label_ids": [],
+      "website": null,
+      "linkedin": null,
+      "industry": null,
+      "annual_revenue": null,
+      "employee_count": null,
+      "is_deleted": false,
+      "address": "200 Oak Avenue, Shelbyville, US"
+    },
+    {
+      "id": 8,
+      "name": "Initech",
+      "add_time": "2025-05-11T13:15:17Z",
+      "update_time": "2026-03-23T16:33:26Z",
+      "visible_to": 3,
+      "custom_fields": null,
+      "owner_id": 101,
+      "label_ids": [],
+      "website": null,
+      "linkedin": null,
+      "industry": null,
+      "annual_revenue": null,
+      "employee_count": null,
+      "is_deleted": false,
+      "address": "300 Elm Street, Capital City, US"
+    }
+  ],
+  "additional_data": {
+    "next_cursor": "eyJmaWVsZCI6ImlkIiwiZmllbGRWYWx1ZSI6OSwic29ydERpcmVjdGlvbiI6ImFzYyIsImlkIjo5fQ"
+  }
+}

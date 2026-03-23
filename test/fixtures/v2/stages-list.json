@@ -1,0 +1,140 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Lead In",
+      "order_nr": 1,
+      "pipeline_id": 1,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2025-06-14T16:35:40Z",
+      "update_time": "2025-06-14T22:52:09Z"
+    },
+    {
+      "id": 2,
+      "name": "Contacted",
+      "order_nr": 2,
+      "pipeline_id": 1,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2025-06-14T16:35:40Z",
+      "update_time": "2025-06-14T22:52:09Z"
+    },
+    {
+      "id": 3,
+      "name": "Demo",
+      "order_nr": 3,
+      "pipeline_id": 1,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2025-06-14T16:35:40Z",
+      "update_time": "2025-06-14T22:52:09Z"
+    },
+    {
+      "id": 4,
+      "name": "Proposal",
+      "order_nr": 4,
+      "pipeline_id": 1,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2025-06-14T16:35:40Z",
+      "update_time": "2025-06-14T22:52:09Z"
+    },
+    {
+      "id": 5,
+      "name": "Negotiation",
+      "order_nr": 5,
+      "pipeline_id": 1,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2025-06-14T16:35:40Z",
+      "update_time": "2025-06-14T22:52:09Z"
+    },
+    {
+      "id": 6,
+      "name": "Won",
+      "order_nr": 6,
+      "pipeline_id": 1,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2025-06-14T22:52:09Z",
+      "update_time": "2025-06-14T22:52:10Z"
+    },
+    {
+      "id": 7,
+      "name": "Identified",
+      "order_nr": 1,
+      "pipeline_id": 2,
+      "deal_probability": 10,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2026-03-15T15:32:56Z",
+      "update_time": "2026-03-15T15:32:56Z"
+    },
+    {
+      "id": 8,
+      "name": "Outreach",
+      "order_nr": 2,
+      "pipeline_id": 2,
+      "deal_probability": 20,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2026-03-15T15:32:56Z",
+      "update_time": "2026-03-15T15:32:56Z"
+    },
+    {
+      "id": 9,
+      "name": "Discussion",
+      "order_nr": 3,
+      "pipeline_id": 2,
+      "deal_probability": 40,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2026-03-15T15:32:56Z",
+      "update_time": "2026-03-15T15:32:56Z"
+    },
+    {
+      "id": 10,
+      "name": "Agreement",
+      "order_nr": 4,
+      "pipeline_id": 2,
+      "deal_probability": 70,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2026-03-15T15:32:56Z",
+      "update_time": "2026-03-15T15:32:56Z"
+    },
+    {
+      "id": 11,
+      "name": "Active",
+      "order_nr": 5,
+      "pipeline_id": 2,
+      "deal_probability": 100,
+      "is_deal_rot_enabled": false,
+      "days_to_rotten": null,
+      "is_deleted": false,
+      "add_time": "2026-03-15T15:32:56Z",
+      "update_time": "2026-03-15T15:32:56Z"
+    }
+  ],
+  "additional_data": {
+    "next_cursor": null
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 9,
+      "name": "Jane Smith",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "add_time": "2025-05-01T19:25:55Z",
+      "update_time": "2026-02-17T14:56:54Z",
+      "visible_to": 3,
+      "custom_fields": {
+        "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0": 100,
+        "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1": 101,
+        "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2": 100,
+        "d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3": "2026-01-15",
+        "e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4": "Interested in enterprise package"
+      },
+      "owner_id": 101,
+      "label_ids": [],
+      "org_id": 301,
+      "is_deleted": false,
+      "picture_id": null,
+      "phones": [],
+      "emails": [
+        {
+          "label": "work",
+          "value": "jane.smith@example.com",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "John Doe",
+      "first_name": "John",
+      "last_name": "Doe",
+      "add_time": "2025-05-01T19:25:55Z",
+      "update_time": "2026-02-17T14:56:54Z",
+      "visible_to": 3,
+      "custom_fields": {
+        "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0": 101,
+        "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1": 102,
+        "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2": 101,
+        "d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3": "2026-02-10",
+        "e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4": "Looking at professional tier"
+      },
+      "owner_id": 101,
+      "label_ids": [],
+      "org_id": 302,
+      "is_deleted": false,
+      "picture_id": null,
+      "phones": [],
+      "emails": [
+        {
+          "label": "work",
+          "value": "john.doe@example.com",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Pat Johnson",
+      "first_name": "Pat",
+      "last_name": "Johnson",
+      "add_time": "2025-05-01T19:25:55Z",
+      "update_time": "2026-02-17T14:56:54Z",
+      "visible_to": 3,
+      "custom_fields": {
+        "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0": 102,
+        "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1": 100,
+        "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2": 102,
+        "d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3": "2026-03-01",
+        "e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4": "Needs follow-up on proposal"
+      },
+      "owner_id": 101,
+      "label_ids": [],
+      "org_id": 303,
+      "is_deleted": false,
+      "picture_id": null,
+      "phones": [],
+      "emails": [
+        {
+          "label": "work",
+          "value": "pat.johnson@example.com",
+          "primary": true
+        }
+      ]
+    }
+  ],
+  "additional_data": {
+    "next_cursor": "eyJmaWVsZCI6ImlkIiwiZmllbGRWYWx1ZSI6MTIsInNvcnREaXJlY3Rpb24iOiJhc2MiLCJpZCI6MTJ9"
+  }
+}

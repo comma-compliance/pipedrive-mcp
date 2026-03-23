@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "data": {
+    "id": 301,
+    "name": "Acme Corp",
+    "add_time": "2026-03-23T18:45:37Z",
+    "update_time": "2026-03-23T18:45:38Z",
+    "visible_to": 3,
+    "custom_fields": null,
+    "owner_id": 101,
+    "label_ids": [],
+    "website": null,
+    "linkedin": null,
+    "industry": null,
+    "annual_revenue": null,
+    "employee_count": null,
+    "is_deleted": false,
+    "address": "100 Main Street, Springfield, US"
+  }
+}

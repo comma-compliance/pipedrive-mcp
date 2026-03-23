@@ -1,0 +1,157 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 100,
+      "name": "Alice Admin",
+      "email": "alice@example.com",
+      "lang": 1,
+      "locale": "en_US",
+      "timezone_name": "America/New_York",
+      "timezone_offset": "-05:00",
+      "default_currency": "USD",
+      "icon_url": null,
+      "active_flag": true,
+      "is_deleted": false,
+      "is_admin": 1,
+      "role_id": 1,
+      "created": "2025-06-14 16:35:36",
+      "has_created_company": true,
+      "is_you": false,
+      "access": [
+        {
+          "app": "sales",
+          "admin": true,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000001"
+        },
+        {
+          "app": "global",
+          "admin": true,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000002"
+        },
+        {
+          "app": "account_settings",
+          "admin": true,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000003"
+        }
+      ],
+      "modified": "2026-03-20 17:51:45",
+      "last_login": "2026-03-20 17:51:45"
+    },
+    {
+      "id": 101,
+      "name": "Bob Sales",
+      "email": "bob@example.com",
+      "lang": 1,
+      "locale": "en_US",
+      "timezone_name": "America/New_York",
+      "timezone_offset": "-05:00",
+      "default_currency": "USD",
+      "icon_url": null,
+      "active_flag": true,
+      "is_deleted": false,
+      "is_admin": 0,
+      "role_id": 2,
+      "created": "2025-06-16 15:06:36",
+      "has_created_company": false,
+      "is_you": true,
+      "access": [
+        {
+          "app": "sales",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000001"
+        },
+        {
+          "app": "global",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000002"
+        },
+        {
+          "app": "account_settings",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000003"
+        }
+      ],
+      "phone": null,
+      "modified": "2026-03-23 14:32:41",
+      "last_login": "2026-03-23 14:32:41"
+    },
+    {
+      "id": 102,
+      "name": "Carol Manager",
+      "email": "carol@example.com",
+      "lang": 1,
+      "locale": "en_US",
+      "timezone_name": "America/Chicago",
+      "timezone_offset": "-06:00",
+      "default_currency": "USD",
+      "icon_url": null,
+      "active_flag": true,
+      "is_deleted": false,
+      "is_admin": 0,
+      "role_id": 2,
+      "created": "2025-06-16 16:22:24",
+      "has_created_company": false,
+      "is_you": false,
+      "access": [
+        {
+          "app": "sales",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000001"
+        },
+        {
+          "app": "global",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000002"
+        },
+        {
+          "app": "account_settings",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000003"
+        }
+      ],
+      "modified": "2026-03-12 00:59:10",
+      "last_login": "2026-03-12 00:59:10"
+    },
+    {
+      "id": 103,
+      "name": "Dave Support",
+      "email": "dave@example.com",
+      "lang": 1,
+      "locale": "en_US",
+      "timezone_name": "America/Los_Angeles",
+      "timezone_offset": "-08:00",
+      "default_currency": "USD",
+      "icon_url": null,
+      "active_flag": false,
+      "is_deleted": false,
+      "is_admin": 0,
+      "role_id": 3,
+      "created": "2025-06-17 14:58:09",
+      "has_created_company": false,
+      "is_you": false,
+      "access": [
+        {
+          "app": "sales",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000001"
+        },
+        {
+          "app": "global",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000002"
+        },
+        {
+          "app": "account_settings",
+          "admin": false,
+          "permission_set_id": "a0000001-0000-0000-0000-000000000003"
+        }
+      ],
+      "modified": "2025-06-15 21:25:27",
+      "last_login": "2025-06-15 21:25:27"
+    }
+  ],
+  "additional_data": {
+    "company_id": 1000001
+  }
+}

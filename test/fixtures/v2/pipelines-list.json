@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Sales Pipeline",
+      "order_nr": 1,
+      "is_deleted": false,
+      "is_deal_probability_enabled": false,
+      "add_time": "2025-06-13T19:06:56Z",
+      "update_time": "2025-06-14T16:37:57Z"
+    },
+    {
+      "id": 2,
+      "name": "Partner Pipeline",
+      "order_nr": 2,
+      "is_deleted": false,
+      "is_deal_probability_enabled": true,
+      "add_time": "2026-03-15T15:32:55Z",
+      "update_time": "2026-03-15T15:32:55Z"
+    }
+  ],
+  "additional_data": {
+    "next_cursor": null
+  }
+}
