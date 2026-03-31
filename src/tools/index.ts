@@ -4,6 +4,7 @@ import "./persons.js";
 import "./organizations.js";
 import "./activities.js";
 import "./notes.js";
+import "./note-comments.js";
 import "./pipelines.js";
 import "./custom-fields.js";
 import "./users.js";
