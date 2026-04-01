@@ -5,7 +5,7 @@ import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
 import { normalizeApiError } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
-import { resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
+import { resolveCustomFieldsByKey, resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
 import { compactPerson } from "../presenters/entities.js";
 import { validateConfirmation, buildDryRunResult } from "../services/guards.js";
 import {
@@ -112,7 +112,11 @@ async function handlePersonsCreate(args: Record<string, unknown>): Promise<ToolR
   if (input.visible_to) body.visible_to = input.visible_to;
 
   const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) Object.assign(customFieldsObj, input.custom_fields);
+  if (input.custom_fields) {
+    const { resolved, errors } = await resolveCustomFieldsByKey("person", input.custom_fields);
+    if (errors.length > 0) return validationErrorResult("pipedrive_persons_create", errors.join("; "));
+    Object.assign(customFieldsObj, resolved);
+  }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("person", input.custom_fields_by_name);
     if (errors.length > 0) return validationErrorResult("pipedrive_persons_create", errors.join("; "));
@@ -143,7 +147,11 @@ async function handlePersonsUpdate(args: Record<string, unknown>): Promise<ToolR
   if (input.visible_to) body.visible_to = input.visible_to;
 
   const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) Object.assign(customFieldsObj, input.custom_fields);
+  if (input.custom_fields) {
+    const { resolved, errors } = await resolveCustomFieldsByKey("person", input.custom_fields);
+    if (errors.length > 0) return validationErrorResult("pipedrive_persons_update", errors.join("; "));
+    Object.assign(customFieldsObj, resolved);
+  }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("person", input.custom_fields_by_name);
     if (errors.length > 0) return validationErrorResult("pipedrive_persons_update", errors.join("; "));

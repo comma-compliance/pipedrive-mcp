@@ -5,7 +5,7 @@ import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
 import { normalizeApiError } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
-import { resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
+import { resolveCustomFieldsByKey, resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
 import { compactOrganization } from "../presenters/entities.js";
 import { validateConfirmation, buildDryRunResult } from "../services/guards.js";
 import {
@@ -108,7 +108,11 @@ async function handleOrgsCreate(args: Record<string, unknown>): Promise<ToolResu
   if (input.visible_to) body.visible_to = input.visible_to;
 
   const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) Object.assign(customFieldsObj, input.custom_fields);
+  if (input.custom_fields) {
+    const { resolved, errors } = await resolveCustomFieldsByKey("organization", input.custom_fields);
+    if (errors.length > 0) return validationErrorResult("pipedrive_organizations_create", errors.join("; "));
+    Object.assign(customFieldsObj, resolved);
+  }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("organization", input.custom_fields_by_name);
     if (errors.length > 0) return validationErrorResult("pipedrive_organizations_create", errors.join("; "));
@@ -137,7 +141,11 @@ async function handleOrgsUpdate(args: Record<string, unknown>): Promise<ToolResu
   if (input.visible_to) body.visible_to = input.visible_to;
 
   const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) Object.assign(customFieldsObj, input.custom_fields);
+  if (input.custom_fields) {
+    const { resolved, errors } = await resolveCustomFieldsByKey("organization", input.custom_fields);
+    if (errors.length > 0) return validationErrorResult("pipedrive_organizations_update", errors.join("; "));
+    Object.assign(customFieldsObj, resolved);
+  }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("organization", input.custom_fields_by_name);
     if (errors.length > 0) return validationErrorResult("pipedrive_organizations_update", errors.join("; "));
