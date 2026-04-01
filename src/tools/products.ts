@@ -5,7 +5,7 @@ import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
 import { normalizeApiError } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
-import { resolveCustomFieldsByName } from "../services/custom-fields.js";
+import { resolveCustomFieldsByKey, resolveCustomFieldsByName } from "../services/custom-fields.js";
 import { validateConfirmation, buildDryRunResult } from "../services/guards.js";
 import {
   ProductsListSchema, ProductsGetSchema, ProductsCreateSchema, ProductsUpdateSchema,
@@ -71,7 +71,11 @@ async function handleProductsCreate(args: Record<string, unknown>): Promise<Tool
   if (input.visible_to) body.visible_to = input.visible_to;
 
   const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) Object.assign(customFieldsObj, input.custom_fields);
+  if (input.custom_fields) {
+    const { resolved, errors } = await resolveCustomFieldsByKey("product", input.custom_fields);
+    if (errors.length > 0) return validationErrorResult("pipedrive_products_create", errors.join("; "));
+    Object.assign(customFieldsObj, resolved);
+  }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("product", input.custom_fields_by_name);
     if (errors.length > 0) return validationErrorResult("pipedrive_products_create", errors.join("; "));
@@ -104,7 +108,11 @@ async function handleProductsUpdate(args: Record<string, unknown>): Promise<Tool
   if (input.visible_to) body.visible_to = input.visible_to;
 
   const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) Object.assign(customFieldsObj, input.custom_fields);
+  if (input.custom_fields) {
+    const { resolved, errors } = await resolveCustomFieldsByKey("product", input.custom_fields);
+    if (errors.length > 0) return validationErrorResult("pipedrive_products_update", errors.join("; "));
+    Object.assign(customFieldsObj, resolved);
+  }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("product", input.custom_fields_by_name);
     if (errors.length > 0) return validationErrorResult("pipedrive_products_update", errors.join("; "));

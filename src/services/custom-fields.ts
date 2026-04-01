@@ -131,6 +131,37 @@ export async function resolveFieldByName(
   };
 }
 
+export async function resolveCustomFieldsByKey(
+  entityType: FieldEntityType,
+  fieldsByKey: Record<string, unknown>,
+): Promise<{ resolved: Record<string, unknown>; errors: string[] }> {
+  const fields = await getFieldsForEntity(entityType);
+  const fieldMap = new Map(fields.map((f) => [f.key, f]));
+  const resolved: Record<string, unknown> = {};
+  const errors: string[] = [];
+
+  for (const [key, value] of Object.entries(fieldsByKey)) {
+    const field = fieldMap.get(key);
+    if (!field || !field.optionsByLabelLC) {
+      // Not an option field or unknown key - pass through as-is
+      resolved[key] = value;
+      continue;
+    }
+
+    const resolvedValue = resolveOptionValue(field, value);
+    if (resolvedValue === null && value !== null && value !== undefined) {
+      const validOptions = field.options?.map((o) => o.label).join(", ") ?? "none";
+      errors.push(
+        `Invalid value "${value}" for field key "${key}" (${field.name}, type: ${field.fieldType}). Valid options: ${validOptions}`,
+      );
+      continue;
+    }
+    resolved[key] = resolvedValue;
+  }
+
+  return { resolved, errors };
+}
+
 export async function resolveCustomFieldsByName(
   entityType: FieldEntityType,
   fieldsByName: Record<string, unknown>,
@@ -177,6 +208,18 @@ export function resolveOptionValue(field: FieldMetadata, value: unknown): unknow
   if (!field.optionsByLabelLC) return value;
 
   if (typeof value === "string") {
+    // For set fields, handle comma-separated ID strings (e.g. "200,201")
+    if (field.fieldType === "set" && value.includes(",")) {
+      const parts = value.split(",").map((s) => s.trim());
+      const ids: number[] = [];
+      for (const part of parts) {
+        const resolved = resolveOptionValue(field, part);
+        if (resolved === null) return null;
+        ids.push(resolved as number);
+      }
+      return ids.join(",");
+    }
+
     // Try to resolve as option label
     const optionId = field.optionsByLabelLC.get(value.toLowerCase());
     if (optionId !== undefined) return optionId;
