@@ -54,6 +54,13 @@ const policies: Record<string, EndpointPolicy> = {
   "notes.update": { version: "v1", method: "PUT", path: "/notes/:id", pagination: "none" },
   "notes.delete": { version: "v1", method: "DELETE", path: "/notes/:id", pagination: "none" },
 
+  // Note Comments (v1)
+  "noteComments.list": { version: "v1", method: "GET", path: "/notes/:id/comments", pagination: "offset" },
+  "noteComments.get": { version: "v1", method: "GET", path: "/notes/:noteId/comments/:id", pagination: "none" },
+  "noteComments.create": { version: "v1", method: "POST", path: "/notes/:id/comments", pagination: "none" },
+  "noteComments.update": { version: "v1", method: "PUT", path: "/notes/:noteId/comments/:id", pagination: "none" },
+  "noteComments.delete": { version: "v1", method: "DELETE", path: "/notes/:noteId/comments/:id", pagination: "none" },
+
   // Pipelines (v2)
   "pipelines.list": { version: "v2", method: "GET", path: "/pipelines", pagination: "cursor" },
   "pipelines.get": { version: "v2", method: "GET", path: "/pipelines/:id", pagination: "none" },

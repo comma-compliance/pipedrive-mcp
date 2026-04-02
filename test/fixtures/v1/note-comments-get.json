@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "data": {
+    "uuid": "499fd290-c436-48e7-b8ba-223ec80434a5",
+    "active_flag": true,
+    "add_time": "2026-03-23 18:50:00",
+    "update_time": "2026-03-23 18:50:00",
+    "content": "<p>Good point, let's follow up on this next week.</p>",
+    "object_id": "501",
+    "object_type": "note",
+    "user_id": 101,
+    "updater_id": null,
+    "company_id": 12345
+  }
+}
