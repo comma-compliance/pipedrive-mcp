@@ -122,6 +122,21 @@ describe("compactMailThread", () => {
     expect(compact.message_count).toBe(0);
     expect(compact.snippet).toBeNull();
   });
+
+  it("falls back to drafts_parties when parties are empty", () => {
+    const raw = {
+      id: 702, subject: "Draft email",
+      has_draft_flag: 1,
+      parties: { from: [], to: [] },
+      drafts_parties: {
+        from: [{ email_address: "bob@example.com", name: "Bob" }],
+        to: [{ email_address: "jane@example.com", name: "Jane" }],
+      },
+    };
+    const compact = compactMailThread(raw);
+    expect(compact.from_emails).toEqual(["bob@example.com"]);
+    expect(compact.to_emails).toEqual(["jane@example.com"]);
+  });
 });
 
 describe("compactMailMessage", () => {

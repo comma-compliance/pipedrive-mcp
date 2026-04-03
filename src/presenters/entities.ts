@@ -215,8 +215,12 @@ export function compactMailThread(raw: Record<string, unknown>): CompactMailThre
     has_draft_flag: Boolean(raw.has_draft_flag),
     deal_id: (raw.deal_id as number) ?? null,
     lead_id: (raw.lead_id as string) ?? null,
-    from_emails: extractMailPartyEmails(raw.parties, "from"),
-    to_emails: extractMailPartyEmails(raw.parties, "to"),
+    from_emails: extractMailPartyEmails(raw.parties, "from").length > 0
+      ? extractMailPartyEmails(raw.parties, "from")
+      : extractMailPartyEmails(raw.drafts_parties, "from"),
+    to_emails: extractMailPartyEmails(raw.parties, "to").length > 0
+      ? extractMailPartyEmails(raw.parties, "to")
+      : extractMailPartyEmails(raw.drafts_parties, "to"),
     update_time: (raw.update_time as string) ?? null,
   };
 }
