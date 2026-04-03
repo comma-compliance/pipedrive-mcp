@@ -133,6 +133,16 @@ export function compactActivity(raw: Record<string, unknown>): CompactActivity {
   };
 }
 
+export interface CompactNoteComment {
+  uuid: string;
+  content: string;
+  user_id: number | null;
+  updater_id: number | null;
+  active_flag: boolean;
+  add_time: string | null;
+  update_time: string | null;
+}
+
 export interface CompactMailThread {
   id: number;
   subject: string;
@@ -179,6 +189,18 @@ function extractMailRecipientEmails(list: unknown): string[] {
   return list
     .map((r: Record<string, unknown>) => ((r as Record<string, unknown>).email_address as string) ?? "")
     .filter((v) => v.length > 0);
+}
+
+export function compactNoteComment(raw: Record<string, unknown>): CompactNoteComment {
+  return {
+    uuid: (raw.uuid as string) ?? "",
+    content: (raw.content as string) ?? "",
+    user_id: (raw.user_id as number) ?? null,
+    updater_id: (raw.updater_id as number) ?? null,
+    active_flag: (raw.active_flag as boolean) ?? true,
+    add_time: (raw.add_time as string) ?? null,
+    update_time: (raw.update_time as string) ?? null,
+  };
 }
 
 export function compactMailThread(raw: Record<string, unknown>): CompactMailThread {

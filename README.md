@@ -1,6 +1,6 @@
 # pipedrive-mcp
 
-A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for [Pipedrive CRM](https://www.pipedrive.com). Provides 75 tools covering deals, persons, organizations, activities, notes, pipelines, products, leads, files, users, filters, custom fields, webhooks, and shortcut tools for common CRM workflows.
+A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for [Pipedrive CRM](https://www.pipedrive.com). Provides 80 tools covering deals, persons, organizations, activities, notes, pipelines, products, leads, files, users, filters, custom fields, webhooks, and shortcut tools for common CRM workflows.
 
 ## Why this exists
 
@@ -134,8 +134,8 @@ docker run -e PIPEDRIVE_API_TOKEN=xxx -e PIPEDRIVE_COMPANY_DOMAIN=yourcompany pi
 ### Activities (7 tools)
 `pipedrive_activities_list` `pipedrive_activities_get` `pipedrive_activities_create` `pipedrive_activities_update` `pipedrive_activities_mark_done` `pipedrive_activities_delete` `pipedrive_activity_types_list`
 
-### Notes (5 tools)
-`pipedrive_notes_list` `pipedrive_notes_get` `pipedrive_notes_create` `pipedrive_notes_update` `pipedrive_notes_delete`
+### Notes & Comments (10 tools)
+`pipedrive_notes_list` `pipedrive_notes_get` `pipedrive_notes_create` `pipedrive_notes_update` `pipedrive_notes_delete` `pipedrive_note_comments_list` `pipedrive_note_comments_get` `pipedrive_note_comments_create` `pipedrive_note_comments_update` `pipedrive_note_comments_delete`
 
 ### Pipelines & Stages (4 tools)
 `pipedrive_pipelines_list` `pipedrive_pipelines_get` `pipedrive_stages_list` `pipedrive_stages_get`

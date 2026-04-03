@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "data": {
+    "uuid": "499fd290-c436-48e7-b8ba-223ec80434a5",
+    "active_flag": true,
+    "add_time": "2026-03-23 18:50:00",
+    "update_time": "2026-03-25 11:00:00",
+    "content": "<p>Updated: let's follow up on Monday instead.</p>",
+    "object_id": "501",
+    "object_type": "note",
+    "user_id": 101,
+    "updater_id": 101,
+    "company_id": 12345
+  }
+}

@@ -5,7 +5,7 @@ import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
 import { normalizeApiError } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
-import { resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
+import { resolveCustomFieldsByKey, resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
 import { buildDealSummary } from "../services/summaries.js";
 import { compactDeal } from "../presenters/entities.js";
 import { formatDealSummary } from "../presenters/summaries.js";
@@ -234,7 +234,11 @@ async function handleDealsCreate(args: Record<string, unknown>): Promise<ToolRes
   // v2 API expects custom fields in a nested `custom_fields` object
   const customFieldsObj: Record<string, unknown> = {};
   if (input.custom_fields) {
-    Object.assign(customFieldsObj, input.custom_fields);
+    const { resolved, errors } = await resolveCustomFieldsByKey("deal", input.custom_fields);
+    if (errors.length > 0) {
+      return validationErrorResult("pipedrive_deals_create", errors.join("; "));
+    }
+    Object.assign(customFieldsObj, resolved);
   }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("deal", input.custom_fields_by_name);
@@ -286,7 +290,11 @@ async function handleDealsUpdate(args: Record<string, unknown>): Promise<ToolRes
 
   const customFieldsObj: Record<string, unknown> = {};
   if (input.custom_fields) {
-    Object.assign(customFieldsObj, input.custom_fields);
+    const { resolved, errors } = await resolveCustomFieldsByKey("deal", input.custom_fields);
+    if (errors.length > 0) {
+      return validationErrorResult("pipedrive_deals_update", errors.join("; "));
+    }
+    Object.assign(customFieldsObj, resolved);
   }
   if (input.custom_fields_by_name) {
     const { resolved, errors } = await resolveCustomFieldsByName("deal", input.custom_fields_by_name);

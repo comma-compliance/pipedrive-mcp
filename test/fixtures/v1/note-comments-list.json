@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "data": [
+    {
+      "uuid": "499fd290-c436-48e7-b8ba-223ec80434a5",
+      "active_flag": true,
+      "add_time": "2026-03-23 18:50:00",
+      "update_time": "2026-03-23 18:50:00",
+      "content": "<p>Good point, let's follow up on this next week.</p>",
+      "object_id": "501",
+      "object_type": "note",
+      "user_id": 101,
+      "updater_id": null,
+      "company_id": 12345
+    },
+    {
+      "uuid": "bf554816-e823-45b7-9c04-21f9aec64121",
+      "active_flag": true,
+      "add_time": "2026-03-24 09:15:00",
+      "update_time": null,
+      "content": "<p>Agreed, I'll set up a call.</p>",
+      "object_id": "501",
+      "object_type": "note",
+      "user_id": 102,
+      "updater_id": null,
+      "company_id": 12345
+    }
+  ],
+  "additional_data": {
+    "pagination": {
+      "start": 0,
+      "limit": 25,
+      "more_items_in_collection": false
+    }
+  }
+}
