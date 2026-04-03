@@ -14,7 +14,7 @@
       "has_body_flag": 1,
       "has_attachments_flag": 0,
       "message_time": "2026-03-21 09:15:00",
-      "timestamp": "2026-03-21 09:15:00",
+      "add_time": "2026-03-21 09:15:00",
       "from": [
         {
           "id": 1,
@@ -47,7 +47,7 @@
       "has_body_flag": 1,
       "has_attachments_flag": 1,
       "message_time": "2026-03-20 14:30:00",
-      "timestamp": "2026-03-20 14:30:00",
+      "add_time": "2026-03-20 14:30:00",
       "from": [
         {
           "id": 2,

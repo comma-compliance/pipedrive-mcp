@@ -95,7 +95,7 @@ describe("compactMailThread", () => {
   it("extracts thread fields and flattens party emails", () => {
     const raw = {
       id: 701, subject: "Re: Proposal", snippet: "Thanks for the proposal",
-      mail_message_count: 3, read_flag: 1, archived_flag: 0, shared_flag: 0,
+      message_count: 3, read_flag: 1, archived_flag: 0, shared_flag: 0,
       has_draft_flag: 0, deal_id: 117, lead_id: null,
       update_time: "2026-03-21T09:15:00Z",
       parties: {
@@ -148,7 +148,7 @@ describe("compactMailMessage", () => {
       cc: [{ name: "Alice", email_address: "alice@example.com" }],
       body: "<p>Hi there</p>", has_body_flag: 1, has_attachments_flag: 0,
       draft_flag: 0, read_flag: 1,
-      timestamp: "2026-03-21 09:15:00", message_time: "2026-03-21 09:15:00",
+      message_time: "2026-03-21 09:15:00", add_time: "2026-03-21 09:15:00",
     };
     const compact = compactMailMessage(raw);
     expect(compact.id).toBe(801);

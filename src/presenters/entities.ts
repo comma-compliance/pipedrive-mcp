@@ -171,8 +171,8 @@ export interface CompactMailMessage {
   has_attachments_flag: boolean;
   draft_flag: boolean;
   read_flag: boolean;
-  timestamp: string | null;
   message_time: string | null;
+  add_time: string | null;
 }
 
 function extractMailPartyEmails(parties: unknown, role: string): string[] {
@@ -208,7 +208,7 @@ export function compactMailThread(raw: Record<string, unknown>): CompactMailThre
     id: raw.id as number,
     subject: (raw.subject as string) ?? "",
     snippet: (raw.snippet as string) ?? null,
-    message_count: (raw.mail_message_count as number) ?? 0,
+    message_count: (raw.message_count as number) ?? 0,
     read_flag: Boolean(raw.read_flag),
     archived_flag: Boolean(raw.archived_flag),
     shared_flag: Boolean(raw.shared_flag),
@@ -240,8 +240,8 @@ export function compactMailMessage(raw: Record<string, unknown>): CompactMailMes
     has_attachments_flag: Boolean(raw.has_attachments_flag),
     draft_flag: Boolean(raw.draft_flag),
     read_flag: Boolean(raw.read_flag),
-    timestamp: (raw.timestamp as string) ?? null,
     message_time: (raw.message_time as string) ?? null,
+    add_time: (raw.add_time as string) ?? null,
   };
 }
 

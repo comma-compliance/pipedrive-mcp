@@ -77,7 +77,7 @@ describe("pipedrive_mail_threads_get", () => {
     expect(parsed.id).toBe(701);
     expect(parsed.subject).toBe("Re: Proposal for Enterprise Package");
     expect(parsed.deal_id).toBe(117);
-    expect(parsed.mail_message_count).toBe(3);
+    expect(parsed.message_count).toBe(3);
   });
 });
 

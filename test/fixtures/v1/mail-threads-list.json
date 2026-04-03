@@ -23,7 +23,7 @@
       "deal_title": "Acme Corp - Enterprise Package",
       "deal_status": "open",
       "lead_id": null,
-      "mail_message_count": 3,
+      "message_count": 3,
       "parties": {
         "from": [
           {

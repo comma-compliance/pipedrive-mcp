@@ -17,7 +17,7 @@
     "update_time": "2026-03-21 10:00:00",
     "deal_id": 117,
     "lead_id": null,
-    "mail_message_count": 3,
+    "message_count": 3,
     "parties": {
       "from": [
         {
