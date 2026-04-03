@@ -5,6 +5,8 @@ import {
   compactOrganization,
   compactActivity,
   compactNote,
+  compactMailThread,
+  compactMailMessage,
 } from "../../../src/presenters/entities.js";
 
 describe("compactDeal", () => {
@@ -86,5 +88,70 @@ describe("compactNote", () => {
     });
     expect(compact.content).toBe("<p>Hello</p>");
     expect(compact.pinned_to_deal_flag).toBe(true);
+  });
+});
+
+describe("compactMailThread", () => {
+  it("extracts thread fields and flattens party emails", () => {
+    const raw = {
+      id: 701, subject: "Re: Proposal", snippet: "Thanks for the proposal",
+      mail_message_count: 3, read_flag: 1, archived_flag: 0, shared_flag: 0,
+      has_draft_flag: 0, deal_id: 117, lead_id: null,
+      update_time: "2026-03-21T09:15:00Z",
+      parties: {
+        from: [{ email_address: "jane@example.com", name: "Jane" }],
+        to: [{ email_address: "bob@example.com", name: "Bob" }],
+      },
+      some_extra_field: "ignored",
+    };
+    const compact = compactMailThread(raw);
+    expect(compact.id).toBe(701);
+    expect(compact.subject).toBe("Re: Proposal");
+    expect(compact.message_count).toBe(3);
+    expect(compact.from_emails).toEqual(["jane@example.com"]);
+    expect(compact.to_emails).toEqual(["bob@example.com"]);
+    expect(compact.read_flag).toBe(true);
+    expect(compact.deal_id).toBe(117);
+    expect(compact).not.toHaveProperty("some_extra_field");
+  });
+
+  it("handles missing parties gracefully", () => {
+    const compact = compactMailThread({ id: 1, subject: "No parties" });
+    expect(compact.from_emails).toEqual([]);
+    expect(compact.to_emails).toEqual([]);
+    expect(compact.message_count).toBe(0);
+    expect(compact.snippet).toBeNull();
+  });
+});
+
+describe("compactMailMessage", () => {
+  it("extracts message fields with flat email strings", () => {
+    const raw = {
+      id: 801, subject: "Hello",
+      from: [{ name: "Jane", email_address: "jane@example.com" }],
+      to: [{ name: "Bob", email_address: "bob@example.com" }],
+      cc: [{ name: "Alice", email_address: "alice@example.com" }],
+      body: "<p>Hi there</p>", has_body_flag: 1, has_attachments_flag: 0,
+      draft_flag: 0, read_flag: 1,
+      timestamp: "2026-03-21 09:15:00", message_time: "2026-03-21 09:15:00",
+    };
+    const compact = compactMailMessage(raw);
+    expect(compact.id).toBe(801);
+    expect(compact.from_name).toBe("Jane");
+    expect(compact.from_email).toBe("jane@example.com");
+    expect(compact.to_emails).toEqual(["bob@example.com"]);
+    expect(compact.cc_emails).toEqual(["alice@example.com"]);
+    expect(compact.body).toBe("<p>Hi there</p>");
+    expect(compact.has_body_flag).toBe(true);
+    expect(compact.read_flag).toBe(true);
+  });
+
+  it("handles missing from/to/cc gracefully", () => {
+    const compact = compactMailMessage({ id: 1, subject: "Minimal" });
+    expect(compact.from_name).toBeNull();
+    expect(compact.from_email).toBe("");
+    expect(compact.to_emails).toEqual([]);
+    expect(compact.cc_emails).toEqual([]);
+    expect(compact.body).toBeNull();
   });
 });
