@@ -143,6 +143,54 @@ export interface CompactNoteComment {
   update_time: string | null;
 }
 
+export interface CompactMailThread {
+  id: number;
+  subject: string;
+  snippet: string | null;
+  message_count: number;
+  read_flag: boolean;
+  archived_flag: boolean;
+  shared_flag: boolean;
+  has_draft_flag: boolean;
+  deal_id: number | null;
+  lead_id: string | null;
+  from_emails: string[];
+  to_emails: string[];
+  update_time: string | null;
+}
+
+export interface CompactMailMessage {
+  id: number;
+  subject: string;
+  from_name: string | null;
+  from_email: string;
+  to_emails: string[];
+  cc_emails: string[];
+  body: string | null;
+  has_body_flag: boolean;
+  has_attachments_flag: boolean;
+  draft_flag: boolean;
+  read_flag: boolean;
+  message_time: string | null;
+  add_time: string | null;
+}
+
+function extractMailPartyEmails(parties: unknown, role: string): string[] {
+  if (!parties || typeof parties !== "object") return [];
+  const group = (parties as Record<string, unknown>)[role];
+  if (!Array.isArray(group)) return [];
+  return group
+    .map((e: Record<string, unknown>) => e.email_address as string)
+    .filter((v): v is string => typeof v === "string" && v.length > 0);
+}
+
+function extractMailRecipientEmails(list: unknown): string[] {
+  if (!Array.isArray(list)) return [];
+  return list
+    .map((r: Record<string, unknown>) => ((r as Record<string, unknown>).email_address as string) ?? "")
+    .filter((v) => v.length > 0);
+}
+
 export function compactNoteComment(raw: Record<string, unknown>): CompactNoteComment {
   return {
     uuid: (raw.uuid as string) ?? "",
@@ -152,6 +200,48 @@ export function compactNoteComment(raw: Record<string, unknown>): CompactNoteCom
     active_flag: (raw.active_flag as boolean) ?? true,
     add_time: (raw.add_time as string) ?? null,
     update_time: (raw.update_time as string) ?? null,
+  };
+}
+
+export function compactMailThread(raw: Record<string, unknown>): CompactMailThread {
+  return {
+    id: raw.id as number,
+    subject: (raw.subject as string) ?? "",
+    snippet: (raw.snippet as string) ?? null,
+    message_count: (raw.message_count as number) ?? 0,
+    read_flag: Boolean(raw.read_flag),
+    archived_flag: Boolean(raw.archived_flag),
+    shared_flag: Boolean(raw.shared_flag),
+    has_draft_flag: Boolean(raw.has_draft_flag),
+    deal_id: (raw.deal_id as number) ?? null,
+    lead_id: (raw.lead_id as string) ?? null,
+    from_emails: extractMailPartyEmails(raw.parties, "from").length > 0
+      ? extractMailPartyEmails(raw.parties, "from")
+      : extractMailPartyEmails(raw.drafts_parties, "from"),
+    to_emails: extractMailPartyEmails(raw.parties, "to").length > 0
+      ? extractMailPartyEmails(raw.parties, "to")
+      : extractMailPartyEmails(raw.drafts_parties, "to"),
+    update_time: (raw.update_time as string) ?? null,
+  };
+}
+
+export function compactMailMessage(raw: Record<string, unknown>): CompactMailMessage {
+  const fromList = raw.from as Array<Record<string, unknown>> | undefined;
+  const firstFrom = Array.isArray(fromList) && fromList.length > 0 ? fromList[0] : null;
+  return {
+    id: raw.id as number,
+    subject: (raw.subject as string) ?? "",
+    from_name: firstFrom ? ((firstFrom.name as string) ?? null) : null,
+    from_email: firstFrom ? ((firstFrom.email_address as string) ?? "") : "",
+    to_emails: extractMailRecipientEmails(raw.to),
+    cc_emails: extractMailRecipientEmails(raw.cc),
+    body: (raw.body as string) ?? null,
+    has_body_flag: Boolean(raw.has_body_flag),
+    has_attachments_flag: Boolean(raw.has_attachments_flag),
+    draft_flag: Boolean(raw.draft_flag),
+    read_flag: Boolean(raw.read_flag),
+    message_time: (raw.message_time as string) ?? null,
+    add_time: (raw.add_time as string) ?? null,
   };
 }
 

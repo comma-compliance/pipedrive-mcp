@@ -1,6 +1,6 @@
 # pipedrive-mcp
 
-A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for [Pipedrive CRM](https://www.pipedrive.com). Provides 80 tools covering deals, persons, organizations, activities, notes, pipelines, products, leads, files, users, filters, custom fields, webhooks, and shortcut tools for common CRM workflows.
+A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for [Pipedrive CRM](https://www.pipedrive.com). Provides 88 tools covering deals, persons, organizations, activities, notes, pipelines, products, leads, files, mail, users, filters, custom fields, webhooks, and shortcut tools for common CRM workflows.
 
 ## Why this exists
 
@@ -14,7 +14,7 @@ We've been running this internally for several weeks against our production Pipe
 
 ## Features
 
-- **Full CRUD** for deals, persons, organizations, activities, notes, products, leads, and webhooks
+- **Full CRUD** for deals, persons, organizations, activities, notes, products, leads, mail, and webhooks
 - **Custom field resolution** - reference fields by human-readable name (e.g. `{"Tier": "Enterprise"}`) instead of API keys
 - **Explicit pagination** - cursor/offset tokens with no silent truncation
 - **Safety guards** - destructive operations require explicit confirmation and support `dry_run` previews
@@ -145,6 +145,11 @@ docker run -e PIPEDRIVE_API_TOKEN=xxx -e PIPEDRIVE_COMPANY_DOMAIN=yourcompany pi
 
 ### Leads (6 tools)
 `pipedrive_leads_list` `pipedrive_leads_get` `pipedrive_leads_create` `pipedrive_leads_update` `pipedrive_leads_delete` `pipedrive_leads_search`
+
+### Mail (8 tools)
+`pipedrive_mail_threads_list` `pipedrive_mail_threads_get` `pipedrive_mail_thread_messages_list` `pipedrive_mail_messages_get` `pipedrive_mail_threads_update` `pipedrive_mail_threads_delete` `pipedrive_deal_mail_messages_list` `pipedrive_person_mail_messages_list`
+
+Read and manage synced email threads and messages from Pipedrive's mailbox. List threads by folder (inbox, drafts, sent, archive), read individual messages with optional body content, link threads to deals or leads, and look up mail associated with a specific deal or person.
 
 ### Files (3 tools)
 `pipedrive_files_list` `pipedrive_files_get` `pipedrive_files_upload`

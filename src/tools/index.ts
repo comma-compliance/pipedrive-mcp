@@ -13,4 +13,5 @@ import "./products.js";
 import "./files.js";
 import "./leads.js";
 import "./webhooks.js";
+import "./mail.js";
 import "./shortcuts.js";

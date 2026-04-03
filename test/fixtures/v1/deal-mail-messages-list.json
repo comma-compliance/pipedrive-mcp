@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 801,
+      "mail_thread_id": 701,
+      "user_id": 101,
+      "subject": "Re: Proposal for Enterprise Package",
+      "snippet": "Thanks for sending over the proposal.",
+      "body": null,
+      "body_url": null,
+      "read_flag": 1,
+      "draft_flag": 0,
+      "has_body_flag": 1,
+      "has_attachments_flag": 0,
+      "message_time": "2026-03-21 09:15:00",
+      "add_time": "2026-03-21 09:15:00",
+      "from": [
+        {
+          "id": 1,
+          "name": "Jane Smith",
+          "email_address": "jane.smith@example.com",
+          "linked_person_id": 201
+        }
+      ],
+      "to": [
+        {
+          "id": 2,
+          "name": "Bob Sales",
+          "email_address": "bob@testcompany.com",
+          "linked_person_id": null
+        }
+      ],
+      "cc": [],
+      "bcc": []
+    }
+  ],
+  "additional_data": {
+    "pagination": {
+      "start": 0,
+      "limit": 25,
+      "more_items_in_collection": false
+    }
+  }
+}
