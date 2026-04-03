@@ -105,6 +105,16 @@ const policies: Record<string, EndpointPolicy> = {
   "webhooks.list": { version: "v1", method: "GET", path: "/webhooks", pagination: "none" },
   "webhooks.create": { version: "v1", method: "POST", path: "/webhooks", pagination: "none" },
   "webhooks.delete": { version: "v1", method: "DELETE", path: "/webhooks/:id", pagination: "none" },
+
+  // Mail (v1)
+  "mailThreads.list": { version: "v1", method: "GET", path: "/mailbox/mailThreads", pagination: "offset" },
+  "mailThreads.get": { version: "v1", method: "GET", path: "/mailbox/mailThreads/:id", pagination: "none" },
+  "mailThreadMessages.list": { version: "v1", method: "GET", path: "/mailbox/mailThreads/:id/mailMessages", pagination: "none" },
+  "mailMessages.get": { version: "v1", method: "GET", path: "/mailbox/mailMessages/:id", pagination: "none" },
+  "mailThreads.update": { version: "v1", method: "PUT", path: "/mailbox/mailThreads/:id", pagination: "none" },
+  "mailThreads.delete": { version: "v1", method: "DELETE", path: "/mailbox/mailThreads/:id", pagination: "none" },
+  "dealMailMessages.list": { version: "v1", method: "GET", path: "/deals/:id/mailMessages", pagination: "offset" },
+  "personMailMessages.list": { version: "v1", method: "GET", path: "/persons/:id/mailMessages", pagination: "offset" },
 };
 
 export function getEndpointPolicy(key: string): EndpointPolicy {
