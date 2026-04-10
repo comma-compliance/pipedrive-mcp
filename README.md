@@ -56,6 +56,9 @@ Your company domain is the subdomain in your Pipedrive URL (e.g. `yourcompany` f
 | `PIPEDRIVE_FIELD_CACHE_TTL_MS` | `300000` | Field metadata cache TTL (5 min) |
 | `PIPEDRIVE_ENABLE_WRITE_TOOLS` | `true` | Set `false` to expose only read tools |
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error` |
+| `SENTRY_DSN` | _(none)_ | Sentry DSN to enable error tracking (omit to disable) |
+| `SENTRY_ENVIRONMENT` | `production` | Sentry environment tag |
+| `SENTRY_RELEASE` | _(none)_ | Sentry release tag |
 
 ## Usage with Claude Code
 

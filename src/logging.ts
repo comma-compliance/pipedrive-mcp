@@ -1,4 +1,12 @@
-type LogLevel = "debug" | "info" | "warn" | "error";
+export type LogLevel = "debug" | "info" | "warn" | "error";
+
+export type LogHook = (level: LogLevel, message: string, data?: Record<string, unknown>) => void;
+
+let _hook: LogHook | null = null;
+
+export function setLogHook(hook: LogHook): void {
+  _hook = hook;
+}
 
 const LEVEL_ORDER: Record<LogLevel, number> = {
   debug: 0,
@@ -18,6 +26,12 @@ function shouldLog(level: LogLevel): boolean {
 }
 
 function emit(level: LogLevel, message: string, data?: Record<string, unknown>): void {
+  // Fire hook before level gate so Sentry breadcrumbs capture even when log level suppresses output
+  try {
+    _hook?.(level, message, data);
+  } catch {
+    // Swallow hook errors to prevent infinite recursion
+  }
   if (!shouldLog(level)) return;
   const entry: Record<string, unknown> = {
     ts: new Date().toISOString(),

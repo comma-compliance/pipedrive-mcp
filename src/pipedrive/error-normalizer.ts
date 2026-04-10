@@ -22,7 +22,7 @@ export interface NormalizedError {
   retry_after_ms?: number;
 }
 
-function categorizeStatus(status: number): ErrorCategory {
+export function categorizeStatus(status: number): ErrorCategory {
   if (status === 401) return "auth";
   if (status === 403) return "auth";
   if (status === 404) return "not_found";
