@@ -35,9 +35,6 @@ async function handleActivitiesList(args: Record<string, unknown>): Promise<Tool
   if (input.org_id) params.org_id = input.org_id;
   if (input.lead_id) params.lead_id = input.lead_id;
   if (input.done !== undefined) params.done = input.done;
-  if (input.type) params.type = input.type;
-  if (input.due_date_from) params.due_date_from = input.due_date_from;
-  if (input.due_date_to) params.due_date_to = input.due_date_to;
   if (input.sort_by) params.sort_by = input.sort_by;
   if (input.sort_direction) params.sort_direction = input.sort_direction;
 
