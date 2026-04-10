@@ -102,6 +102,12 @@ function buildTests(ids: SeedIds): FilterTest[] {
 
     // ---- v1 filters ----
     { tool: "filters_list", base: V1, path: "/filters", params: { type: "deals" } },
+    { tool: "filters_list", base: V1, path: "/filters", params: { type: "people" } },
+    { tool: "filters_list", base: V1, path: "/filters", params: { type: "org" } },
+    { tool: "filters_list", base: V1, path: "/filters", params: { type: "products" } },
+    { tool: "filters_list", base: V1, path: "/filters", params: { type: "activity" } },
+    { tool: "filters_list", base: V1, path: "/filters", params: { type: "leads" } },
+    { tool: "filters_list", base: V1, path: "/filters", params: { type: "projects" } },
 
     // ---- v1 mail threads ----
     { tool: "mail_threads_list", base: V1, path: "/mailbox/mailThreads", params: { limit: "1", folder: "inbox" } },

@@ -48,10 +48,10 @@ async function handleFiltersGet(args: Record<string, unknown>): Promise<ToolResu
 
 const ENTITY_TYPE_TO_V2_PATH: Record<string, string> = {
   deals: "/deals",
-  persons: "/persons",
-  orgs: "/organizations",
+  people: "/persons",
+  org: "/organizations",
   products: "/products",
-  activities: "/activities",
+  activity: "/activities",
 };
 
 async function handleFiltersResults(args: Record<string, unknown>): Promise<ToolResult> {
