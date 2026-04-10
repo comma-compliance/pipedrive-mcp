@@ -40,6 +40,9 @@
     "typescript": "^5.7.0",
     "vitest": "^4.1.1"
   },
+  "optionalDependencies": {
+    "@sentry/node": "^10.0.0"
+  },
   "engines": {
     "node": ">=22.0.0"
   }

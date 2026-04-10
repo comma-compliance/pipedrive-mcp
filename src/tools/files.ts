@@ -3,7 +3,7 @@ import { successResult, errorResult, paginatedResult, type ToolResult } from "..
 import { apiErrorResult, validationErrorResult } from "../mcp/errors.js";
 import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
-import { normalizeApiError } from "../pipedrive/error-normalizer.js";
+import { normalizeApiError, categorizeStatus } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
 import { FilesListSchema, FilesGetSchema, FilesUploadSchema } from "../schemas/files.js";
 import { zodToJsonSchema } from "../schemas/zod-to-json.js";
@@ -140,10 +140,11 @@ async function handleFilesUpload(args: Record<string, unknown>): Promise<ToolRes
   }
 
   if (!response.ok || !data.success) {
+    const status = response.status;
     return apiErrorResult({
-      category: "validation", status: response.status, tool: "pipedrive_files_upload",
+      category: categorizeStatus(status), status, tool: "pipedrive_files_upload",
       endpoint: "POST /files", pipedrive_error: (data.error as string) ?? "",
-      retryable: response.status >= 500, guidance: "File upload failed. Check the file data and entity IDs.",
+      retryable: status === 429 || status >= 500, guidance: "File upload failed. Check the file data and entity IDs.",
     });
   }
 

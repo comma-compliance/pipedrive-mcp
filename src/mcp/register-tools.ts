@@ -8,6 +8,7 @@ import { validationErrorResult } from "./errors.js";
 import { errorResult } from "./tool-result.js";
 import { HttpClientError } from "../pipedrive/http-client.js";
 import { log } from "../logging.js";
+import { captureError } from "../sentry.js";
 
 export interface ToolDefinition {
   name: string;
@@ -78,6 +79,12 @@ export function setupToolHandlers(server: Server): void {
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       log.error(`Tool ${name} threw unexpectedly`, { error: message });
+
+      captureError(err, {
+        tool: name,
+        category: err instanceof HttpClientError ? "network" : "internal",
+        extra: { args_keys: Object.keys(args ?? {}) },
+      });
 
       // Distinguish network/API errors from validation errors
       if (err instanceof HttpClientError) {
