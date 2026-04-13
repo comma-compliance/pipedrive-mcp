@@ -36,7 +36,7 @@ export function categorizeStatus(status: number): ErrorCategory {
 function getGuidance(status: number, pipedriveError: string): string {
   switch (status) {
     case 401:
-      return "API token is invalid or expired. Check PIPEDRIVE_API_TOKEN.";
+      return "Authentication failed. The API token or OAuth token may be invalid or expired. Check PIPEDRIVE_API_TOKEN or PIPEDRIVE_OAUTH_TOKEN.";
     case 403:
       return "User lacks permission for this operation.";
     case 404:
