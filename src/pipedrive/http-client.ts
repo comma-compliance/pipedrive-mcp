@@ -17,13 +17,16 @@ export interface HttpRequestOptions {
 }
 
 export function createHttpClient(config: Config) {
-  const { apiToken, requestTimeoutMs } = config;
+  const { apiToken, oauthToken, requestTimeoutMs } = config;
 
   async function request<T = unknown>(opts: HttpRequestOptions): Promise<HttpResponse<T>> {
     const url = new URL(opts.url);
 
-    // Auth via query parameter
-    url.searchParams.set("api_token", apiToken);
+    // Auth: Bearer header for OAuth, query param for API token.
+    // Config validation guarantees exactly one of the two is set.
+    if (!oauthToken && apiToken) {
+      url.searchParams.set("api_token", apiToken);
+    }
 
     // Add extra query params
     if (opts.params) {
@@ -37,6 +40,10 @@ export function createHttpClient(config: Config) {
     const headers: Record<string, string> = {
       Accept: "application/json",
     };
+
+    if (oauthToken) {
+      headers["Authorization"] = `Bearer ${oauthToken}`;
+    }
 
     let bodyStr: string | undefined;
     if (opts.body !== undefined) {
