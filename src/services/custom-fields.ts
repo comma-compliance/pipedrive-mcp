@@ -217,7 +217,7 @@ export function resolveOptionValue(field: FieldMetadata, value: unknown): unknow
         if (resolved === null) return null;
         ids.push(resolved as number);
       }
-      return ids.join(",");
+      return ids;
     }
 
     // Try to resolve as option label
@@ -244,7 +244,7 @@ export function resolveOptionValue(field: FieldMetadata, value: unknown): unknow
       if (resolved === null) return null;
       ids.push(resolved as number);
     }
-    return ids.join(",");
+    return ids;
   }
 
   return value;
@@ -267,11 +267,18 @@ export function reverseResolveFieldValue(
     return { value, display_value: label ?? String(value) };
   }
 
-  if (typeof value === "string" && field.fieldType === "set") {
-    // Comma-separated IDs
-    const ids = value.split(",").map((s) => parseInt(s.trim(), 10));
-    const labels = ids.map((id) => field.optionsById?.get(id) ?? String(id));
-    return { value, display_value: labels.join(", ") };
+  if (field.fieldType === "set") {
+    // v2 returns arrays of IDs; v1 returns comma-separated ID strings
+    let ids: number[] = [];
+    if (Array.isArray(value)) {
+      ids = value.map((v) => (typeof v === "number" ? v : parseInt(String(v), 10)));
+    } else if (typeof value === "string") {
+      ids = value.split(",").map((s) => parseInt(s.trim(), 10));
+    }
+    if (ids.length > 0) {
+      const labels = ids.map((id) => field.optionsById?.get(id) ?? String(id));
+      return { value, display_value: labels.join(", ") };
+    }
   }
 
   return { value, display_value: String(value) };
