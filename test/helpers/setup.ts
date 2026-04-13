@@ -16,6 +16,7 @@ import type { ToolResult } from "../../src/mcp/tool-result.js";
 let _initialized = false;
 
 export const TEST_API_TOKEN = "test-api-token-00000000000000000000";
+export const TEST_OAUTH_TOKEN = "test-oauth-access-token-abc123";
 export const TEST_COMPANY_DOMAIN = "testcompany";
 export const BASE_URL = `https://${TEST_COMPANY_DOMAIN}.pipedrive.com`;
 
@@ -33,6 +34,12 @@ const TEST_CONFIG: Config = {
   fieldCacheTtlMs: 300000,
   enableWriteTools: true,
   logLevel: "error",
+};
+
+const TEST_OAUTH_CONFIG: Config = {
+  ...TEST_CONFIG,
+  apiToken: undefined as unknown as string,
+  oauthToken: TEST_OAUTH_TOKEN,
 };
 
 export async function setupTestContext(): Promise<void> {
@@ -57,6 +64,30 @@ export async function setupTestContext(): Promise<void> {
   createServer(TEST_CONFIG);
 
   // Enable write tools for tests
+  setWriteToolsEnabled(true);
+
+  _initialized = true;
+}
+
+/**
+ * Set up test context in OAuth mode.
+ * Used in its own test file, do not mix with setupTestContext in the same file.
+ */
+export async function setupOAuthTestContext(): Promise<void> {
+  process.env.PIPEDRIVE_OAUTH_TOKEN = TEST_OAUTH_TOKEN;
+  process.env.PIPEDRIVE_COMPANY_DOMAIN = TEST_COMPANY_DOMAIN;
+  delete process.env.PIPEDRIVE_API_TOKEN;
+
+  setLogLevel("error");
+
+  resetConfig();
+  clearToolRegistry();
+  clearFieldCache();
+
+  await import("../../src/tools/index.js");
+
+  createServer(TEST_OAUTH_CONFIG);
+
   setWriteToolsEnabled(true);
 
   _initialized = true;
