@@ -24,7 +24,7 @@ export const NotesGetSchema = z.object({
 }).strict();
 
 export const NotesCreateSchema = z.object({
-  content_html: z.string().min(1).describe("Note content in HTML"),
+  content_html: z.string().min(1).describe("Plain HTML markup for the note body (e.g. <p>, <br>, <strong>, <em>, <ul><li>, <a href>). Pass the HTML directly. Do not wrap it in a CDATA section (<![CDATA[ ... ]]>); CDATA is XML syntax, not HTML."),
   deal_id: z.coerce.number().int().positive().optional().describe("Attach to this deal"),
   person_id: z.coerce.number().int().positive().optional().describe("Attach to this person"),
   org_id: z.coerce.number().int().positive().optional().describe("Attach to this organization"),
@@ -36,7 +36,7 @@ export const NotesCreateSchema = z.object({
 
 export const NotesUpdateSchema = z.object({
   note_id: IdSchema.describe("The note ID to update"),
-  content_html: z.string().min(1).describe("Updated note content in HTML"),
+  content_html: z.string().min(1).describe("Updated plain HTML markup for the note body (e.g. <p>, <br>, <strong>, <em>, <ul><li>, <a href>). Pass the HTML directly. Do not wrap it in a CDATA section (<![CDATA[ ... ]]>); CDATA is XML syntax, not HTML."),
   pinned_to_deal_flag: z.boolean().optional(),
   pinned_to_person_flag: z.boolean().optional(),
   pinned_to_organization_flag: z.boolean().optional(),

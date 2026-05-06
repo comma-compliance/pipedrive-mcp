@@ -106,8 +106,8 @@ async function handleNoteCommentsDelete(args: Record<string, unknown>): Promise<
 const tools: ToolDefinition[] = [
   { name: "pipedrive_note_comments_list", description: "List comments on a note.", inputSchema: zodToJsonSchema(NoteCommentsListSchema), handler: handleNoteCommentsList },
   { name: "pipedrive_note_comments_get", description: "Get a single comment by UUID on a note.", inputSchema: zodToJsonSchema(NoteCommentsGetSchema), handler: handleNoteCommentsGet },
-  { name: "pipedrive_note_comments_create", description: "Add a comment to a note. Content is HTML.", inputSchema: zodToJsonSchema(NoteCommentsCreateSchema), handler: handleNoteCommentsCreate },
-  { name: "pipedrive_note_comments_update", description: "Update a comment on a note.", inputSchema: zodToJsonSchema(NoteCommentsUpdateSchema), handler: handleNoteCommentsUpdate },
+  { name: "pipedrive_note_comments_create", description: "Add a comment to a note. content_html is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(NoteCommentsCreateSchema), handler: handleNoteCommentsCreate },
+  { name: "pipedrive_note_comments_update", description: "Update a comment on a note. content_html is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(NoteCommentsUpdateSchema), handler: handleNoteCommentsUpdate },
   { name: "pipedrive_note_comments_delete", description: 'Delete a comment from a note. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(NoteCommentsDeleteSchema), handler: handleNoteCommentsDelete },
 ];
 
