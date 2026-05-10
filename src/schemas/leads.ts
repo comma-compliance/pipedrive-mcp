@@ -7,7 +7,7 @@ import {
   SortDirectionSchema,
   OwnerIdSchema,
   FilterIdSchema,
-  IncludeFieldsSchema,
+  LeadsSearchIncludeFieldsSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,
   VisibleToSchema,
@@ -75,5 +75,5 @@ export const LeadsSearchSchema = z.object({
   organization_id: z.coerce.number().int().positive().optional(),
   cursor: PageTokenSchema,
   limit: SearchLimitSchema,
-  include_fields: IncludeFieldsSchema,
+  include_fields: LeadsSearchIncludeFieldsSchema,
 }).strict();

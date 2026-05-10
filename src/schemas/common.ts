@@ -69,10 +69,103 @@ export const FieldModeSchema = z
   .default("overwrite")
   .describe("How to handle existing field values: overwrite (default) or append for set fields");
 
-export const IncludeFieldsSchema = z
-  .array(z.string())
-  .optional()
-  .describe("Additional fields to include in the response");
+// Per-endpoint include_fields enums. Pipedrive v2 only accepts a fixed enum per endpoint;
+// previously a shared array(string) schema let invalid values through and produced 400s.
+// Source: developers.pipedrive.com/docs/api/v1 (v2 sections per entity).
+
+export const DealsIncludeFieldsSchema = z
+  .array(
+    z.enum([
+      "next_activity_id",
+      "last_activity_id",
+      "first_won_time",
+      "products_count",
+      "files_count",
+      "notes_count",
+      "followers_count",
+      "email_messages_count",
+      "activities_count",
+      "done_activities_count",
+      "undone_activities_count",
+      "participants_count",
+      "last_incoming_mail_time",
+      "last_outgoing_mail_time",
+      "smart_bcc_email",
+      "source_lead_id",
+    ]),
+  )
+  .optional();
+
+export const DealsSearchIncludeFieldsSchema = z
+  .array(z.enum(["deal.cc_email"]))
+  .optional();
+
+export const OrganizationsIncludeFieldsSchema = z
+  .array(
+    z.enum([
+      "next_activity_id",
+      "last_activity_id",
+      "open_deals_count",
+      "related_open_deals_count",
+      "closed_deals_count",
+      "related_closed_deals_count",
+      "email_messages_count",
+      "people_count",
+      "activities_count",
+      "done_activities_count",
+      "undone_activities_count",
+      "files_count",
+      "notes_count",
+      "followers_count",
+      "won_deals_count",
+      "related_won_deals_count",
+      "lost_deals_count",
+      "related_lost_deals_count",
+      "smart_bcc_email",
+      "custom_fields",
+    ]),
+  )
+  .optional();
+
+export const PersonsIncludeFieldsSchema = z
+  .array(
+    z.enum([
+      "next_activity_id",
+      "last_activity_id",
+      "open_deals_count",
+      "related_open_deals_count",
+      "closed_deals_count",
+      "related_closed_deals_count",
+      "participant_open_deals_count",
+      "participant_closed_deals_count",
+      "email_messages_count",
+      "activities_count",
+      "done_activities_count",
+      "undone_activities_count",
+      "files_count",
+      "notes_count",
+      "followers_count",
+      "won_deals_count",
+      "related_won_deals_count",
+      "lost_deals_count",
+      "related_lost_deals_count",
+      "last_incoming_mail_time",
+      "last_outgoing_mail_time",
+      "marketing_status",
+      "doi_status",
+      "smart_bcc_email",
+      "custom_fields",
+    ]),
+  )
+  .optional();
+
+export const PersonsSearchIncludeFieldsSchema = z
+  .array(z.enum(["person.picture"]))
+  .optional();
+
+export const LeadsSearchIncludeFieldsSchema = z
+  .array(z.enum(["lead.was_seen"]))
+  .optional();
 
 export const CustomFieldKeysSchema = z
   .array(z.string())
