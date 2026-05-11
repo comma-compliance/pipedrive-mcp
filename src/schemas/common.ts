@@ -69,9 +69,10 @@ export const FieldModeSchema = z
   .default("overwrite")
   .describe("How to handle existing field values: overwrite (default) or append for set fields");
 
-// Per-endpoint include_fields enums. Pipedrive v2 only accepts a fixed enum per endpoint;
-// previously a shared array(string) schema let invalid values through and produced 400s.
-// Source: developers.pipedrive.com/docs/api/v1 (v2 sections per entity).
+// Per-endpoint include_fields enums. The Pipedrive API only accepts a fixed enum of
+// values per endpoint; previously a shared array(string) schema let invalid values
+// through and produced 400s. Source: developers.pipedrive.com/docs/api/v1 (the v2
+// sections per entity, which is what this MCP currently calls).
 
 export const DealsIncludeFieldsSchema = z
   .array(
