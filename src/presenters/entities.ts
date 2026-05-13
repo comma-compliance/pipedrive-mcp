@@ -128,7 +128,7 @@ export function compactActivity(raw: Record<string, unknown>): CompactActivity {
     deal_id: (raw.deal_id as number) ?? null,
     person_id: (raw.person_id as number) ?? null,
     org_id: (raw.org_id as number) ?? null,
-    user_id: (raw.user_id as number) ?? null,
+    user_id: (raw.owner_id as number) ?? (raw.user_id as number) ?? null,
     update_time: (raw.update_time as string) ?? null,
   };
 }

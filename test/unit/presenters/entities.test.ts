@@ -75,6 +75,16 @@ describe("compactActivity", () => {
     expect(compact.subject).toBe("Call");
     expect(compact.done).toBe(true);
     expect(compact.deal_id).toBe(1);
+    expect(compact.user_id).toBe(4);
+  });
+
+  it("reads owner_id from v2 responses into user_id", () => {
+    const compact = compactActivity({
+      id: 11, subject: "Call", type: "call", done: false,
+      deal_id: 1, person_id: 2, org_id: 3, owner_id: 42,
+      update_time: "2026-03-01",
+    });
+    expect(compact.user_id).toBe(42);
   });
 });
 
