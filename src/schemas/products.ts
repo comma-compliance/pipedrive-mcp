@@ -7,7 +7,6 @@ import {
   SortDirectionSchema,
   OwnerIdSchema,
   FilterIdSchema,
-  IncludeFieldsSchema,
   CustomFieldKeysSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,

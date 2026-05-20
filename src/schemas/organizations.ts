@@ -9,7 +9,7 @@ import {
   FilterIdSchema,
   UpdatedSinceSchema,
   UpdatedUntilSchema,
-  IncludeFieldsSchema,
+  OrganizationsIncludeFieldsSchema,
   CustomFieldKeysSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,
@@ -31,13 +31,13 @@ export const OrganizationsListSchema = z.object({
   limit: LimitSchema,
   sort_by: z.enum(["id", "update_time", "add_time", "name"]).optional().describe("Field to sort by"),
   sort_direction: SortDirectionSchema,
-  include_fields: IncludeFieldsSchema,
+  include_fields: OrganizationsIncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
 }).strict();
 
 export const OrganizationsGetSchema = z.object({
   org_id: IdSchema.describe("The organization ID to retrieve"),
-  include_fields: IncludeFieldsSchema,
+  include_fields: OrganizationsIncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
 }).strict();
 
@@ -47,7 +47,6 @@ export const OrganizationsSearchSchema = z.object({
   exact_match: z.boolean().optional().describe("Whether to do an exact match"),
   cursor: PageTokenSchema,
   limit: SearchLimitSchema,
-  include_fields: IncludeFieldsSchema,
 }).strict();
 
 export const OrganizationsCreateSchema = z.object({

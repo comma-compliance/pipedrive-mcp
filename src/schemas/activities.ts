@@ -30,7 +30,7 @@ export const ActivitiesGetSchema = z.object({
 
 export const ActivitiesCreateSchema = z.object({
   subject: z.string().min(1).describe("Activity subject"),
-  type: z.string().min(1).describe("Activity type (e.g. 'call', 'meeting', 'task', 'email')"),
+  type: z.string().min(1).describe("Activity type key_string. Workspace-defined; common defaults include 'call', 'meeting', 'task', 'deadline', 'email', 'lunch'. Call pipedrive_activity_types_list first if unsure which types are configured for this workspace."),
   deal_id: z.coerce.number().int().positive().optional(),
   person_id: z.coerce.number().int().positive().optional(),
   org_id: z.coerce.number().int().positive().optional(),
@@ -47,7 +47,7 @@ export const ActivitiesCreateSchema = z.object({
 export const ActivitiesUpdateSchema = z.object({
   activity_id: IdSchema.describe("The activity ID to update"),
   subject: z.string().optional(),
-  type: z.string().optional(),
+  type: z.string().optional().describe("Activity type key_string. Workspace-defined; common defaults include 'call', 'meeting', 'task', 'deadline', 'email', 'lunch'. Call pipedrive_activity_types_list first if unsure which types are configured for this workspace."),
   deal_id: z.coerce.number().int().positive().optional(),
   person_id: z.coerce.number().int().positive().optional(),
   org_id: z.coerce.number().int().positive().optional(),
