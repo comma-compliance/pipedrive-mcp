@@ -123,7 +123,6 @@ export const OrganizationsIncludeFieldsSchema = z
       "lost_deals_count",
       "related_lost_deals_count",
       "smart_bcc_email",
-      "custom_fields",
     ]),
   )
   .optional();
@@ -155,7 +154,6 @@ export const PersonsIncludeFieldsSchema = z
       "marketing_status",
       "doi_status",
       "smart_bcc_email",
-      "custom_fields",
     ]),
   )
   .optional();
