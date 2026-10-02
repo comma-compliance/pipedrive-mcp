@@ -30,7 +30,7 @@ export const ActivitiesGetSchema = z.object({
 
 export const ActivitiesCreateSchema = z.object({
   subject: z.string().min(1).describe("Activity subject"),
-  type: z.string().min(1).describe("Activity type (e.g. 'call', 'meeting', 'task', 'email')"),
+  type: z.string().min(1).describe("Activity type key_string. Workspace-defined; common defaults include 'call', 'meeting', 'task', 'deadline', 'email', 'lunch'. Call pipedrive_activity_types_list first if unsure which types are configured for this workspace."),
   deal_id: z.coerce.number().int().positive().optional(),
   person_id: z.coerce.number().int().positive().optional(),
   org_id: z.coerce.number().int().positive().optional(),
@@ -39,7 +39,7 @@ export const ActivitiesCreateSchema = z.object({
   due_date: z.string().optional().describe("Due date (YYYY-MM-DD)"),
   due_time: z.string().optional().describe("Due time (HH:MM)"),
   duration: z.string().optional().describe("Duration (HH:MM)"),
-  note: z.string().optional().describe("Note content"),
+  note: z.string().optional().describe("Plain HTML markup for the activity note (e.g. <p>, <br>, <strong>, <em>, <ul><li>, <a href>). Pass the HTML directly. Do not wrap it in a CDATA section (<![CDATA[ ... ]]>); CDATA is XML syntax, not HTML."),
   location: z.string().optional(),
   done: z.boolean().optional().default(false),
 }).strict();
@@ -47,7 +47,7 @@ export const ActivitiesCreateSchema = z.object({
 export const ActivitiesUpdateSchema = z.object({
   activity_id: IdSchema.describe("The activity ID to update"),
   subject: z.string().optional(),
-  type: z.string().optional(),
+  type: z.string().optional().describe("Activity type key_string. Workspace-defined; common defaults include 'call', 'meeting', 'task', 'deadline', 'email', 'lunch'. Call pipedrive_activity_types_list first if unsure which types are configured for this workspace."),
   deal_id: z.coerce.number().int().positive().optional(),
   person_id: z.coerce.number().int().positive().optional(),
   org_id: z.coerce.number().int().positive().optional(),
@@ -56,7 +56,7 @@ export const ActivitiesUpdateSchema = z.object({
   due_date: z.string().optional(),
   due_time: z.string().optional(),
   duration: z.string().optional(),
-  note: z.string().optional(),
+  note: z.string().optional().describe("Updated plain HTML markup for the activity note (e.g. <p>, <br>, <strong>, <em>, <ul><li>, <a href>). Pass the HTML directly. Do not wrap it in a CDATA section (<![CDATA[ ... ]]>); CDATA is XML syntax, not HTML."),
   location: z.string().optional(),
   done: z.boolean().optional(),
 }).strict();

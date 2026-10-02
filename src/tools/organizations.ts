@@ -5,7 +5,7 @@ import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
 import { normalizeApiError } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
-import { resolveCustomFieldsByKey, resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
+import { buildFieldsPayload, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
 import { compactOrganization } from "../presenters/entities.js";
 import { validateConfirmation, buildDryRunResult } from "../services/guards.js";
 import {
@@ -83,7 +83,6 @@ async function handleOrgsSearch(args: Record<string, unknown>): Promise<ToolResu
   const params: Record<string, string | number | boolean | undefined> = { term: input.term, ...paginationParams };
   if (input.fields) params.fields = input.fields;
   if (input.exact_match !== undefined) params.exact_match = input.exact_match;
-  if (input.include_fields) params.include_fields = input.include_fields.join(",");
 
   const response = await rateLimiters.search.schedule(() =>
     withRetry(() => apiV2.list<Record<string, unknown>>("/organizations/search", params), { label: "pipedrive_organizations_search" }),
@@ -107,18 +106,10 @@ async function handleOrgsCreate(args: Record<string, unknown>): Promise<ToolResu
   if (input.address) body.address = input.address;
   if (input.visible_to) body.visible_to = input.visible_to;
 
-  const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) {
-    const { resolved, errors } = await resolveCustomFieldsByKey("organization", input.custom_fields);
-    if (errors.length > 0) return validationErrorResult("pipedrive_organizations_create", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (input.custom_fields_by_name) {
-    const { resolved, errors } = await resolveCustomFieldsByName("organization", input.custom_fields_by_name);
-    if (errors.length > 0) return validationErrorResult("pipedrive_organizations_create", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (Object.keys(customFieldsObj).length > 0) body.custom_fields = customFieldsObj;
+  // v2 nests custom fields in `custom_fields`; labels go top-level as `label_ids`
+  const { payload, errors } = await buildFieldsPayload("organization", input);
+  if (errors.length > 0) return validationErrorResult("pipedrive_organizations_create", errors.join("; "));
+  Object.assign(body, payload);
 
   const response = await rateLimiters.general.schedule(() =>
     withRetry(() => apiV2.post<Record<string, unknown>>("/organizations", body), { label: "pipedrive_organizations_create" }),
@@ -140,18 +131,10 @@ async function handleOrgsUpdate(args: Record<string, unknown>): Promise<ToolResu
   if (input.address) body.address = input.address;
   if (input.visible_to) body.visible_to = input.visible_to;
 
-  const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) {
-    const { resolved, errors } = await resolveCustomFieldsByKey("organization", input.custom_fields);
-    if (errors.length > 0) return validationErrorResult("pipedrive_organizations_update", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (input.custom_fields_by_name) {
-    const { resolved, errors } = await resolveCustomFieldsByName("organization", input.custom_fields_by_name);
-    if (errors.length > 0) return validationErrorResult("pipedrive_organizations_update", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (Object.keys(customFieldsObj).length > 0) body.custom_fields = customFieldsObj;
+  // v2 nests custom fields in `custom_fields`; labels go top-level as `label_ids`
+  const { payload, errors } = await buildFieldsPayload("organization", input);
+  if (errors.length > 0) return validationErrorResult("pipedrive_organizations_update", errors.join("; "));
+  Object.assign(body, payload);
 
   const response = await rateLimiters.general.schedule(() =>
     withRetry(() => apiV2.patch<Record<string, unknown>>(`/organizations/${input.org_id}`, body), { label: `pipedrive_organizations_update ${input.org_id}` }),
@@ -203,8 +186,8 @@ const tools: ToolDefinition[] = [
   { name: "pipedrive_organizations_list", description: "List organizations with filters and pagination.", inputSchema: zodToJsonSchema(OrganizationsListSchema), handler: handleOrgsList },
   { name: "pipedrive_organizations_get", description: "Get a single organization by ID with full details including resolved custom fields.", inputSchema: zodToJsonSchema(OrganizationsGetSchema), handler: handleOrgsGet },
   { name: "pipedrive_organizations_search", description: "Search organizations by name, address, or custom fields.", inputSchema: zodToJsonSchema(OrganizationsSearchSchema), handler: handleOrgsSearch },
-  { name: "pipedrive_organizations_create", description: "Create a new organization. Supports custom fields by name or key.", inputSchema: zodToJsonSchema(OrganizationsCreateSchema), handler: handleOrgsCreate },
-  { name: "pipedrive_organizations_update", description: "Update an existing organization. Supports custom fields by name or key.", inputSchema: zodToJsonSchema(OrganizationsUpdateSchema), handler: handleOrgsUpdate },
+  { name: "pipedrive_organizations_create", description: "Create a new organization. Supports custom fields by name or key, and the native Label field via label_ids (IDs or label names).", inputSchema: zodToJsonSchema(OrganizationsCreateSchema), handler: handleOrgsCreate },
+  { name: "pipedrive_organizations_update", description: "Update an existing organization. Supports custom fields by name or key, and the native Label field via label_ids (IDs or label names).", inputSchema: zodToJsonSchema(OrganizationsUpdateSchema), handler: handleOrgsUpdate },
   { name: "pipedrive_organizations_delete", description: 'Delete an organization. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(OrganizationsDeleteSchema), handler: handleOrgsDelete },
   { name: "pipedrive_organizations_merge", description: 'Merge two organizations. Source is merged into target. Requires confirm: "MERGE". Supports dry_run.', inputSchema: zodToJsonSchema(OrganizationsMergeSchema), handler: handleOrgsMerge },
 ];

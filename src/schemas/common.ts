@@ -63,16 +63,125 @@ export const CustomFieldsByNameSchema = z
   .optional()
   .describe("Custom fields by human-readable name (e.g. { 'Tier': 'Enterprise' })");
 
+export const LabelIdsSchema = z
+  .union([
+    z.array(z.union([z.number().int(), z.string()])),
+    z.number().int(),
+    z.string(),
+  ])
+  .optional()
+  .describe(
+    "Native Label field. Label option IDs or label names (e.g. [367] or ['Test / Internal']). Replaces existing labels; pass [] to clear. Sent as top-level label_ids, not a custom field.",
+  );
+
 export const FieldModeSchema = z
   .enum(["overwrite", "append"])
   .optional()
   .default("overwrite")
   .describe("How to handle existing field values: overwrite (default) or append for set fields");
 
-export const IncludeFieldsSchema = z
-  .array(z.string())
+// Per-endpoint include_fields enums. The Pipedrive API only accepts a fixed enum of
+// values per endpoint; previously a shared array(string) schema let invalid values
+// through and produced 400s. Source: developers.pipedrive.com/docs/api/v1 (the v2
+// sections per entity, which is what this MCP currently calls).
+
+export const DealsIncludeFieldsSchema = z
+  .array(
+    z.enum([
+      "next_activity_id",
+      "last_activity_id",
+      "first_won_time",
+      "products_count",
+      "files_count",
+      "notes_count",
+      "followers_count",
+      "email_messages_count",
+      "activities_count",
+      "done_activities_count",
+      "undone_activities_count",
+      "participants_count",
+      "last_incoming_mail_time",
+      "last_outgoing_mail_time",
+      "smart_bcc_email",
+      "source_lead_id",
+    ]),
+  )
   .optional()
   .describe("Additional fields to include in the response");
+
+export const DealsSearchIncludeFieldsSchema = z
+  .array(z.enum(["deal.cc_email"]))
+  .optional()
+  .describe("Additional fields to include in the search results");
+
+export const OrganizationsIncludeFieldsSchema = z
+  .array(
+    z.enum([
+      "next_activity_id",
+      "last_activity_id",
+      "open_deals_count",
+      "related_open_deals_count",
+      "closed_deals_count",
+      "related_closed_deals_count",
+      "email_messages_count",
+      "people_count",
+      "activities_count",
+      "done_activities_count",
+      "undone_activities_count",
+      "files_count",
+      "notes_count",
+      "followers_count",
+      "won_deals_count",
+      "related_won_deals_count",
+      "lost_deals_count",
+      "related_lost_deals_count",
+      "smart_bcc_email",
+    ]),
+  )
+  .optional()
+  .describe("Additional fields to include in the response");
+
+export const PersonsIncludeFieldsSchema = z
+  .array(
+    z.enum([
+      "next_activity_id",
+      "last_activity_id",
+      "open_deals_count",
+      "related_open_deals_count",
+      "closed_deals_count",
+      "related_closed_deals_count",
+      "participant_open_deals_count",
+      "participant_closed_deals_count",
+      "email_messages_count",
+      "activities_count",
+      "done_activities_count",
+      "undone_activities_count",
+      "files_count",
+      "notes_count",
+      "followers_count",
+      "won_deals_count",
+      "related_won_deals_count",
+      "lost_deals_count",
+      "related_lost_deals_count",
+      "last_incoming_mail_time",
+      "last_outgoing_mail_time",
+      "marketing_status",
+      "doi_status",
+      "smart_bcc_email",
+    ]),
+  )
+  .optional()
+  .describe("Additional fields to include in the response. marketing_status and doi_status can only be included if the company has the marketing app enabled");
+
+export const PersonsSearchIncludeFieldsSchema = z
+  .array(z.enum(["person.picture"]))
+  .optional()
+  .describe("Additional fields to include in the search results");
+
+export const LeadsSearchIncludeFieldsSchema = z
+  .array(z.enum(["lead.was_seen"]))
+  .optional()
+  .describe("Additional fields to include in the search results");
 
 export const CustomFieldKeysSchema = z
   .array(z.string())

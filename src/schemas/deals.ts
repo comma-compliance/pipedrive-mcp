@@ -9,10 +9,12 @@ import {
   FilterIdSchema,
   UpdatedSinceSchema,
   UpdatedUntilSchema,
-  IncludeFieldsSchema,
+  DealsIncludeFieldsSchema,
+  DealsSearchIncludeFieldsSchema,
   CustomFieldKeysSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,
+  LabelIdsSchema,
   FieldModeSchema,
   VisibleToSchema,
   ConfirmDeleteSchema,
@@ -33,15 +35,15 @@ export const DealsListSchema = z.object({
   updated_until: UpdatedUntilSchema,
   cursor: PageTokenSchema,
   limit: LimitSchema,
-  sort_by: z.enum(["id", "update_time", "add_time", "title", "value"]).optional().describe("Field to sort by"),
+  sort_by: z.enum(["id", "update_time", "add_time"]).optional().describe("Field to sort by"),
   sort_direction: SortDirectionSchema,
-  include_fields: IncludeFieldsSchema,
+  include_fields: DealsIncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
 }).strict();
 
 export const DealsGetSchema = z.object({
   deal_id: IdSchema.describe("The deal ID to retrieve"),
-  include_fields: IncludeFieldsSchema,
+  include_fields: DealsIncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
 }).strict();
 
@@ -54,7 +56,7 @@ export const DealsSearchSchema = z.object({
   status: z.enum(["open", "won", "lost"]).optional().describe("Filter by deal status"),
   cursor: PageTokenSchema,
   limit: SearchLimitSchema,
-  include_fields: IncludeFieldsSchema,
+  include_fields: DealsSearchIncludeFieldsSchema,
 }).strict();
 
 export const DealsSummarySchema = z.object({
@@ -87,6 +89,7 @@ export const DealsCreateSchema = z.object({
   status: z.enum(["open", "won", "lost"]).optional(),
   expected_close_date: z.string().optional(),
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();
@@ -103,6 +106,7 @@ export const DealsUpdateSchema = z.object({
   status: z.enum(["open", "won", "lost"]).optional(),
   expected_close_date: z.string().optional(),
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();

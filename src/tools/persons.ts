@@ -5,7 +5,7 @@ import { getContext } from "../server.js";
 import { withRetry } from "../pipedrive/retries.js";
 import { normalizeApiError } from "../pipedrive/error-normalizer.js";
 import { buildPaginationParams, buildPaginatedResult } from "../pipedrive/pagination.js";
-import { resolveCustomFieldsByKey, resolveCustomFieldsByName, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
+import { buildFieldsPayload, resolveCustomFieldsInResponse } from "../services/custom-fields.js";
 import { compactPerson } from "../presenters/entities.js";
 import { validateConfirmation, buildDryRunResult } from "../services/guards.js";
 import {
@@ -111,18 +111,10 @@ async function handlePersonsCreate(args: Record<string, unknown>): Promise<ToolR
   if (input.owner_id) body.owner_id = input.owner_id;
   if (input.visible_to) body.visible_to = input.visible_to;
 
-  const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) {
-    const { resolved, errors } = await resolveCustomFieldsByKey("person", input.custom_fields);
-    if (errors.length > 0) return validationErrorResult("pipedrive_persons_create", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (input.custom_fields_by_name) {
-    const { resolved, errors } = await resolveCustomFieldsByName("person", input.custom_fields_by_name);
-    if (errors.length > 0) return validationErrorResult("pipedrive_persons_create", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (Object.keys(customFieldsObj).length > 0) body.custom_fields = customFieldsObj;
+  // v2 nests custom fields in `custom_fields`; labels go top-level as `label_ids`
+  const { payload, errors } = await buildFieldsPayload("person", input);
+  if (errors.length > 0) return validationErrorResult("pipedrive_persons_create", errors.join("; "));
+  Object.assign(body, payload);
 
   const response = await rateLimiters.general.schedule(() =>
     withRetry(() => apiV2.post<Record<string, unknown>>("/persons", body), { label: "pipedrive_persons_create" }),
@@ -146,18 +138,10 @@ async function handlePersonsUpdate(args: Record<string, unknown>): Promise<ToolR
   if (input.owner_id) body.owner_id = input.owner_id;
   if (input.visible_to) body.visible_to = input.visible_to;
 
-  const customFieldsObj: Record<string, unknown> = {};
-  if (input.custom_fields) {
-    const { resolved, errors } = await resolveCustomFieldsByKey("person", input.custom_fields);
-    if (errors.length > 0) return validationErrorResult("pipedrive_persons_update", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (input.custom_fields_by_name) {
-    const { resolved, errors } = await resolveCustomFieldsByName("person", input.custom_fields_by_name);
-    if (errors.length > 0) return validationErrorResult("pipedrive_persons_update", errors.join("; "));
-    Object.assign(customFieldsObj, resolved);
-  }
-  if (Object.keys(customFieldsObj).length > 0) body.custom_fields = customFieldsObj;
+  // v2 nests custom fields in `custom_fields`; labels go top-level as `label_ids`
+  const { payload, errors } = await buildFieldsPayload("person", input);
+  if (errors.length > 0) return validationErrorResult("pipedrive_persons_update", errors.join("; "));
+  Object.assign(body, payload);
 
   const response = await rateLimiters.general.schedule(() =>
     withRetry(() => apiV2.patch<Record<string, unknown>>(`/persons/${input.person_id}`, body), { label: `pipedrive_persons_update ${input.person_id}` }),
@@ -209,8 +193,8 @@ const tools: ToolDefinition[] = [
   { name: "pipedrive_persons_list", description: "List persons with filters and pagination.", inputSchema: zodToJsonSchema(PersonsListSchema), handler: handlePersonsList },
   { name: "pipedrive_persons_get", description: "Get a single person by ID with full details including resolved custom fields.", inputSchema: zodToJsonSchema(PersonsGetSchema), handler: handlePersonsGet },
   { name: "pipedrive_persons_search", description: "Search persons by name, email, phone, or custom fields.", inputSchema: zodToJsonSchema(PersonsSearchSchema), handler: handlePersonsSearch },
-  { name: "pipedrive_persons_create", description: "Create a new person. Supports custom fields by name or key.", inputSchema: zodToJsonSchema(PersonsCreateSchema), handler: handlePersonsCreate },
-  { name: "pipedrive_persons_update", description: "Update an existing person. Supports custom fields by name or key.", inputSchema: zodToJsonSchema(PersonsUpdateSchema), handler: handlePersonsUpdate },
+  { name: "pipedrive_persons_create", description: "Create a new person. Supports custom fields by name or key, and the native Label field via label_ids (IDs or label names).", inputSchema: zodToJsonSchema(PersonsCreateSchema), handler: handlePersonsCreate },
+  { name: "pipedrive_persons_update", description: "Update an existing person. Supports custom fields by name or key, and the native Label field via label_ids (IDs or label names).", inputSchema: zodToJsonSchema(PersonsUpdateSchema), handler: handlePersonsUpdate },
   { name: "pipedrive_persons_delete", description: 'Delete a person. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(PersonsDeleteSchema), handler: handlePersonsDelete },
   { name: "pipedrive_persons_merge", description: 'Merge two persons. Source is merged into target. Requires confirm: "MERGE". Supports dry_run.', inputSchema: zodToJsonSchema(PersonsMergeSchema), handler: handlePersonsMerge },
 ];

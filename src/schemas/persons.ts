@@ -9,10 +9,12 @@ import {
   FilterIdSchema,
   UpdatedSinceSchema,
   UpdatedUntilSchema,
-  IncludeFieldsSchema,
+  PersonsIncludeFieldsSchema,
+  PersonsSearchIncludeFieldsSchema,
   CustomFieldKeysSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,
+  LabelIdsSchema,
   FieldModeSchema,
   VisibleToSchema,
   ConfirmDeleteSchema,
@@ -30,15 +32,15 @@ export const PersonsListSchema = z.object({
   updated_until: UpdatedUntilSchema,
   cursor: PageTokenSchema,
   limit: LimitSchema,
-  sort_by: z.enum(["id", "update_time", "add_time", "name"]).optional().describe("Field to sort by"),
+  sort_by: z.enum(["id", "update_time", "add_time"]).optional().describe("Field to sort by"),
   sort_direction: SortDirectionSchema,
-  include_fields: IncludeFieldsSchema,
+  include_fields: PersonsIncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
 }).strict();
 
 export const PersonsGetSchema = z.object({
   person_id: IdSchema.describe("The person ID to retrieve"),
-  include_fields: IncludeFieldsSchema,
+  include_fields: PersonsIncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
 }).strict();
 
@@ -49,7 +51,7 @@ export const PersonsSearchSchema = z.object({
   organization_id: z.coerce.number().int().positive().optional().describe("Filter by organization ID"),
   cursor: PageTokenSchema,
   limit: SearchLimitSchema,
-  include_fields: IncludeFieldsSchema,
+  include_fields: PersonsSearchIncludeFieldsSchema,
 }).strict();
 
 export const PersonsCreateSchema = z.object({
@@ -59,6 +61,7 @@ export const PersonsCreateSchema = z.object({
   org_id: z.coerce.number().int().positive().optional(),
   owner_id: OwnerIdSchema,
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();
@@ -71,6 +74,7 @@ export const PersonsUpdateSchema = z.object({
   org_id: z.coerce.number().int().positive().optional(),
   owner_id: OwnerIdSchema,
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();

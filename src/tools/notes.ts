@@ -127,8 +127,8 @@ async function handleNotesDelete(args: Record<string, unknown>): Promise<ToolRes
 const tools: ToolDefinition[] = [
   { name: "pipedrive_notes_list", description: "List notes, optionally scoped to a deal, person, org, or lead.", inputSchema: zodToJsonSchema(NotesListSchema), handler: handleNotesList },
   { name: "pipedrive_notes_get", description: "Get a single note by ID.", inputSchema: zodToJsonSchema(NotesGetSchema), handler: handleNotesGet },
-  { name: "pipedrive_notes_create", description: "Create a note attached to a deal, person, org, or lead. Content is HTML.", inputSchema: zodToJsonSchema(NotesCreateSchema), handler: handleNotesCreate },
-  { name: "pipedrive_notes_update", description: "Update a note's content and pin flags.", inputSchema: zodToJsonSchema(NotesUpdateSchema), handler: handleNotesUpdate },
+  { name: "pipedrive_notes_create", description: "Create a note attached to a deal, person, org, or lead. content_html is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(NotesCreateSchema), handler: handleNotesCreate },
+  { name: "pipedrive_notes_update", description: "Update a note's content and pin flags. content_html is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(NotesUpdateSchema), handler: handleNotesUpdate },
   { name: "pipedrive_notes_delete", description: 'Delete a note. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(NotesDeleteSchema), handler: handleNotesDelete },
 ];
 

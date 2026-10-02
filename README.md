@@ -1,6 +1,6 @@
 # pipedrive-mcp
 
-A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for [Pipedrive CRM](https://www.pipedrive.com). Provides 88 tools covering deals, persons, organizations, activities, notes, pipelines, products, leads, files, mail, users, filters, custom fields, webhooks, and shortcut tools for common CRM workflows.
+A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for [Pipedrive CRM](https://www.pipedrive.com). Provides 93 tools covering deals, persons, organizations, activities, notes, pipelines, products, leads, files, mail, users, filters, custom fields, webhooks, and shortcut tools for common CRM workflows.
 
 ## Why this exists
 
@@ -163,8 +163,8 @@ docker run -e PIPEDRIVE_API_TOKEN=xxx -e PIPEDRIVE_COMPANY_DOMAIN=yourcompany pi
 ### Pipelines & Stages (4 tools)
 `pipedrive_pipelines_list` `pipedrive_pipelines_get` `pipedrive_stages_list` `pipedrive_stages_get`
 
-### Products (10 tools)
-`pipedrive_products_list` `pipedrive_products_get` `pipedrive_products_create` `pipedrive_products_update` `pipedrive_products_delete` `pipedrive_products_search` `pipedrive_deal_products_list` `pipedrive_deal_products_add` `pipedrive_deal_products_update` `pipedrive_deal_products_delete`
+### Products (15 tools)
+`pipedrive_products_list` `pipedrive_products_get` `pipedrive_products_create` `pipedrive_products_update` `pipedrive_products_delete` `pipedrive_products_search` `pipedrive_product_variations_list` `pipedrive_product_variations_create` `pipedrive_product_variations_update` `pipedrive_product_variations_delete` `pipedrive_product_deals_list` `pipedrive_deal_products_list` `pipedrive_deal_products_add` `pipedrive_deal_products_update` `pipedrive_deal_products_delete`
 
 ### Leads (6 tools)
 `pipedrive_leads_list` `pipedrive_leads_get` `pipedrive_leads_create` `pipedrive_leads_update` `pipedrive_leads_delete` `pipedrive_leads_search`

@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "data": [
+    { "id": 117, "title": "Acme Corp: Pipedrive Subscription (Jan 2026)", "status": "won" },
+    { "id": 118, "title": "Globex: Pipedrive Subscription (Feb 2026)", "status": "won" }
+  ],
+  "additional_data": {
+    "pagination": { "start": 0, "limit": 25, "more_items_in_collection": false }
+  }
+}
