@@ -142,8 +142,8 @@ export async function resolveCustomFieldsByKey(
 
   for (const [key, value] of Object.entries(fieldsByKey)) {
     const field = fieldMap.get(key);
-    if (!field || !field.optionsByLabelLC) {
-      // Not an option field or unknown key - pass through as-is
+    if (!field || !field.optionsByLabelLC || NATIVE_LABEL_KEYS.includes(key)) {
+      // Not an option field, unknown key, or native label (resolved later by buildFieldsPayload) - pass through as-is
       resolved[key] = value;
       continue;
     }
@@ -185,6 +185,12 @@ export async function resolveCustomFieldsByName(
       continue;
     }
 
+    // Native labels are resolved later by buildFieldsPayload
+    if (NATIVE_LABEL_KEYS.includes(field.key)) {
+      resolved[field.key] = value;
+      continue;
+    }
+
     // Resolve enum/set values
     const resolvedValue = resolveOptionValue(field, value);
     if (resolvedValue === null && value !== null && value !== undefined) {
@@ -207,47 +213,64 @@ export function resolveOptionValue(field: FieldMetadata, value: unknown): unknow
   // Text fields - pass through
   if (!field.optionsByLabelLC) return value;
 
-  if (typeof value === "string") {
-    // For set fields, handle comma-separated ID strings (e.g. "200,201")
-    if (field.fieldType === "set" && value.includes(",")) {
-      const parts = value.split(",").map((s) => s.trim());
-      const ids: number[] = [];
-      for (const part of parts) {
-        const resolved = resolveOptionValue(field, part);
-        if (resolved === null) return null;
-        ids.push(resolved as number);
-      }
-      return ids.join(",");
-    }
+  // v2 rejects anything but a JSON array of integer option ids for multi-option fields
+  if (field.fieldType === "set") return resolveSetValue(field, value);
 
-    // Try to resolve as option label
-    const optionId = field.optionsByLabelLC.get(value.toLowerCase());
+  return resolveSingleOption(field, value);
+}
+
+function resolveSingleOption(field: FieldMetadata, value: unknown): number | null {
+  if (typeof value === "string") {
+    const optionId = field.optionsByLabelLC?.get(value.trim().toLowerCase());
     if (optionId !== undefined) return optionId;
 
-    // If it's a number string, might be an option ID already
-    const asNum = parseInt(value, 10);
-    if (!isNaN(asNum) && field.optionsById?.has(asNum)) return asNum;
-
+    // A numeric string might be an option ID already
+    if (/^\s*\d+\s*$/.test(value)) {
+      const asNum = parseInt(value, 10);
+      if (field.optionsById?.has(asNum)) return asNum;
+    }
     return null;
   }
 
   if (typeof value === "number") {
-    if (field.optionsById?.has(value)) return value;
+    return field.optionsById?.has(value) ? value : null;
+  }
+
+  return null;
+}
+
+/**
+ * Resolve a multi-option (set) value to an array of option ids.
+ * Accepts an id, a numeric string, an option label, a comma-separated string
+ * of ids or labels, or an array of any of those.
+ */
+function resolveSetValue(field: FieldMetadata, value: unknown): number[] | null {
+  const items = Array.isArray(value) ? value : [value];
+  const ids: number[] = [];
+
+  for (const item of items) {
+    const single = resolveSingleOption(field, item);
+    if (single !== null) {
+      ids.push(single);
+      continue;
+    }
+
+    // Comma-separated ids or labels (e.g. "200,201"); tried after the whole
+    // string so labels that contain commas still match
+    if (typeof item === "string" && item.includes(",")) {
+      for (const part of item.split(",")) {
+        if (part.trim() === "") continue;
+        const resolved = resolveSingleOption(field, part);
+        if (resolved === null) return null;
+        ids.push(resolved);
+      }
+      continue;
+    }
+
     return null;
   }
 
-  // Array of values for set fields
-  if (Array.isArray(value) && field.fieldType === "set") {
-    const ids: number[] = [];
-    for (const v of value) {
-      const resolved = resolveOptionValue(field, v);
-      if (resolved === null) return null;
-      ids.push(resolved as number);
-    }
-    return ids.join(",");
-  }
-
-  return value;
+  return [...new Set(ids)];
 }
 
 export function reverseResolveFieldValue(
@@ -265,6 +288,11 @@ export function reverseResolveFieldValue(
   if (typeof value === "number") {
     const label = field.optionsById.get(value);
     return { value, display_value: label ?? String(value) };
+  }
+
+  if (Array.isArray(value)) {
+    const labels = value.map((id) => field.optionsById?.get(Number(id)) ?? String(id));
+    return { value, display_value: labels.join(", ") };
   }
 
   if (typeof value === "string" && field.fieldType === "set") {
@@ -358,4 +386,88 @@ function stringSimilarity(a: string, b: string): number {
 
 export function clearFieldCache(): void {
   fieldCache?.clear();
+}
+
+// Native label field keys. v1 field metadata calls it "label" (deals, older
+// person/org setups) or "label_ids"; the v2 write API only accepts top-level
+// `label_ids`, never a key inside custom_fields.
+const NATIVE_LABEL_KEYS = ["label_ids", "label"];
+
+export async function getLabelField(entityType: FieldEntityType): Promise<FieldMetadata | null> {
+  const fields = await getFieldsForEntity(entityType);
+  for (const key of NATIVE_LABEL_KEYS) {
+    const field = fields.find((f) => f.key === key && f.fieldType === "set");
+    if (field) return field;
+  }
+  for (const key of NATIVE_LABEL_KEYS) {
+    const field = fields.find((f) => f.key === key);
+    if (field) return field;
+  }
+  return null;
+}
+
+/** Resolve label ids, numeric strings, or label names to an array of label option ids. */
+export async function resolveLabelIds(
+  entityType: FieldEntityType,
+  value: unknown,
+): Promise<{ ids: number[] | null; error: string | null }> {
+  const field = await getLabelField(entityType);
+  if (!field || !field.options) {
+    return { ids: null, error: `No label field found for ${entityType}` };
+  }
+  const setField: FieldMetadata = { ...field, fieldType: "set" };
+  const ids = resolveOptionValue(setField, value) as number[] | null;
+  if (ids === null) {
+    const validOptions = field.options.map((o) => `${o.label} (${o.id})`).join(", ") || "none";
+    return {
+      ids: null,
+      error: `Invalid label value ${JSON.stringify(value)} for ${entityType}. Valid labels: ${validOptions}`,
+    };
+  }
+  return { ids, error: null };
+}
+
+/**
+ * Build the custom_fields and label_ids parts of a v2 create/update body.
+ * Native label keys passed through custom_fields or custom_fields_by_name are
+ * pulled out and sent as top-level label_ids instead.
+ */
+export async function buildFieldsPayload(
+  entityType: FieldEntityType,
+  input: {
+    custom_fields?: Record<string, unknown>;
+    custom_fields_by_name?: Record<string, unknown>;
+    label_ids?: unknown;
+  },
+): Promise<{ payload: Record<string, unknown>; errors: string[] }> {
+  const customFieldsObj: Record<string, unknown> = {};
+  const errors: string[] = [];
+  let labelValue: unknown = input.label_ids;
+
+  if (input.custom_fields) {
+    const { resolved, errors: keyErrors } = await resolveCustomFieldsByKey(entityType, input.custom_fields);
+    errors.push(...keyErrors);
+    Object.assign(customFieldsObj, resolved);
+  }
+  if (input.custom_fields_by_name) {
+    const { resolved, errors: nameErrors } = await resolveCustomFieldsByName(entityType, input.custom_fields_by_name);
+    errors.push(...nameErrors);
+    Object.assign(customFieldsObj, resolved);
+  }
+
+  for (const key of NATIVE_LABEL_KEYS) {
+    if (!(key in customFieldsObj)) continue;
+    if (labelValue === undefined) labelValue = customFieldsObj[key];
+    delete customFieldsObj[key];
+  }
+
+  const payload: Record<string, unknown> = {};
+  if (labelValue !== undefined) {
+    const { ids, error } = await resolveLabelIds(entityType, labelValue === null ? [] : labelValue);
+    if (error) errors.push(error);
+    else payload.label_ids = ids;
+  }
+  if (Object.keys(customFieldsObj).length > 0) payload.custom_fields = customFieldsObj;
+
+  return { payload, errors };
 }

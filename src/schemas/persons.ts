@@ -13,6 +13,7 @@ import {
   CustomFieldKeysSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,
+  LabelIdsSchema,
   FieldModeSchema,
   VisibleToSchema,
   ConfirmDeleteSchema,
@@ -59,6 +60,7 @@ export const PersonsCreateSchema = z.object({
   org_id: z.coerce.number().int().positive().optional(),
   owner_id: OwnerIdSchema,
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();
@@ -71,6 +73,7 @@ export const PersonsUpdateSchema = z.object({
   org_id: z.coerce.number().int().positive().optional(),
   owner_id: OwnerIdSchema,
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();
