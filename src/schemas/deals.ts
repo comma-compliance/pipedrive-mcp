@@ -14,6 +14,7 @@ import {
   CustomFieldKeysSchema,
   CustomFieldsSchema,
   CustomFieldsByNameSchema,
+  LabelIdsSchema,
   FieldModeSchema,
   VisibleToSchema,
   ConfirmDeleteSchema,
@@ -88,6 +89,7 @@ export const DealsCreateSchema = z.object({
   status: z.enum(["open", "won", "lost"]).optional(),
   expected_close_date: z.string().optional(),
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();
@@ -104,6 +106,7 @@ export const DealsUpdateSchema = z.object({
   status: z.enum(["open", "won", "lost"]).optional(),
   expected_close_date: z.string().optional(),
   visible_to: VisibleToSchema,
+  label_ids: LabelIdsSchema,
   custom_fields: CustomFieldsSchema,
   custom_fields_by_name: CustomFieldsByNameSchema,
 }).strict();

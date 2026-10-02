@@ -63,6 +63,17 @@ export const CustomFieldsByNameSchema = z
   .optional()
   .describe("Custom fields by human-readable name (e.g. { 'Tier': 'Enterprise' })");
 
+export const LabelIdsSchema = z
+  .union([
+    z.array(z.union([z.number().int(), z.string()])),
+    z.number().int(),
+    z.string(),
+  ])
+  .optional()
+  .describe(
+    "Native Label field. Label option IDs or label names (e.g. [367] or ['Test / Internal']). Replaces existing labels; pass [] to clear. Sent as top-level label_ids, not a custom field.",
+  );
+
 export const FieldModeSchema = z
   .enum(["overwrite", "append"])
   .optional()
