@@ -81,6 +81,16 @@ describe("pipedrive_product_variations_update", () => {
     const parsed = data as Record<string, unknown>;
     expect(parsed.message).toContain("203 updated");
   });
+
+  it("rejects an update with no fields without calling the API", async () => {
+    const { result } = await callTool("pipedrive_product_variations_update", {
+      product_id: 29,
+      product_variation_id: 203,
+    });
+
+    expect(result.isError).toBe(true);
+    expect(JSON.stringify(result.content)).toContain("Provide name or prices");
+  });
 });
 
 describe("pipedrive_product_variations_delete", () => {

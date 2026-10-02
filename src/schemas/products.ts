@@ -148,7 +148,9 @@ export const ProductVariationsUpdateSchema = z.object({
   product_variation_id: IdSchema.describe("The product variation ID to update"),
   name: z.string().min(1).max(255).optional().describe("The name of the product variation"),
   prices: z.array(VariationPriceSchema).optional().describe("Variation prices"),
-}).strict();
+}).strict().refine((v) => v.name !== undefined || v.prices !== undefined, {
+  message: "Provide name or prices to update",
+});
 
 export const ProductVariationsDeleteSchema = z.object({
   product_id: IdSchema.describe("The product ID the variation belongs to"),
