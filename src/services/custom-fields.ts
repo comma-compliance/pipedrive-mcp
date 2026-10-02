@@ -259,7 +259,8 @@ function resolveSetValue(field: FieldMetadata, value: unknown): number[] | null 
     // string so labels that contain commas still match
     if (typeof item === "string" && item.includes(",")) {
       for (const part of item.split(",")) {
-        if (part.trim() === "") continue;
+        // Reject empty segments so a typo like "," can't clear the field
+        if (part.trim() === "") return null;
         const resolved = resolveSingleOption(field, part);
         if (resolved === null) return null;
         ids.push(resolved);
@@ -411,10 +412,24 @@ export async function resolveLabelIds(
   entityType: FieldEntityType,
   value: unknown,
 ): Promise<{ ids: number[] | null; error: string | null }> {
-  const field = await getLabelField(entityType);
-  if (!field || !field.options) {
-    return { ids: null, error: `No label field found for ${entityType}` };
+  let field: FieldMetadata | null = null;
+  let lookupError: string | null = null;
+  try {
+    field = await getLabelField(entityType);
+  } catch (err) {
+    lookupError = err instanceof Error ? err.message : String(err);
   }
+
+  if (!field || !field.options) {
+    // Numeric ids need no name lookup - send them and let Pipedrive validate
+    const numericIds = parseNumericIds(value);
+    if (numericIds !== null) return { ids: numericIds, error: null };
+    return {
+      ids: null,
+      error: `Cannot resolve label names for ${entityType}: ${lookupError ?? "no label field found"}. Pass numeric label ids instead.`,
+    };
+  }
+
   const setField: FieldMetadata = { ...field, fieldType: "set" };
   const ids = resolveOptionValue(setField, value) as number[] | null;
   if (ids === null) {
@@ -425,6 +440,26 @@ export async function resolveLabelIds(
     };
   }
   return { ids, error: null };
+}
+
+/** Parse ids, numeric strings, comma-separated id strings, or arrays of those. Null if anything is not an id. */
+function parseNumericIds(value: unknown): number[] | null {
+  const items = Array.isArray(value) ? value : [value];
+  const ids: number[] = [];
+  for (const item of items) {
+    if (typeof item === "number" && Number.isInteger(item) && item > 0) {
+      ids.push(item);
+      continue;
+    }
+    if (typeof item !== "string") return null;
+    for (const part of item.split(",")) {
+      if (!/^\s*\d+\s*$/.test(part)) return null;
+      const id = parseInt(part, 10);
+      if (id <= 0) return null;
+      ids.push(id);
+    }
+  }
+  return [...new Set(ids)];
 }
 
 /**

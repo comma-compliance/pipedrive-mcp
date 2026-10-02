@@ -210,4 +210,41 @@ describe("native label field on v2 writes", () => {
     await callTool("pipedrive_organizations_update", { org_id: 7, label_ids: "368" });
     expect(updated.body).toEqual({ label_ids: [368] });
   });
+
+  it("rejects a comma-only label value instead of clearing labels", async () => {
+    mockFields("/v1/dealFields", dealFields);
+
+    const { result } = await callTool("pipedrive_deals_update", { deal_id: 227, label_ids: "," });
+
+    expect(result.isError).toBe(true);
+  });
+
+  it("sends numeric label ids when the entity has no label field in metadata", async () => {
+    mockFields("/v1/organizationFields", { success: true, data: [{ key: "name", name: "Name", field_type: "varchar" }] });
+    const captured = captureBody("patch", "/api/v2/organizations/7", { id: 7 });
+
+    const { result } = await callTool("pipedrive_organizations_update", { org_id: 7, label_ids: [368, "369"] });
+
+    expect(result.isError).toBeFalsy();
+    expect(captured.body).toEqual({ label_ids: [368, 369] });
+  });
+
+  it("sends numeric label ids when the field metadata request fails", async () => {
+    nock(BASE_URL).get("/v1/organizationFields").query(true).times(5).reply(500, { success: false, error: "boom" });
+    const captured = captureBody("patch", "/api/v2/organizations/7", { id: 7 });
+
+    const { result } = await callTool("pipedrive_organizations_update", { org_id: 7, label_ids: "368" });
+
+    expect(result.isError).toBeFalsy();
+    expect(captured.body).toEqual({ label_ids: [368] });
+  });
+
+  it("explains that label names need metadata when none is available", async () => {
+    mockFields("/v1/organizationFields", { success: true, data: [] });
+
+    const { result } = await callTool("pipedrive_organizations_update", { org_id: 7, label_ids: ["Test / Internal"] });
+
+    expect(result.isError).toBe(true);
+    expect(JSON.stringify(result.content)).toContain("Pass numeric label ids");
+  });
 });

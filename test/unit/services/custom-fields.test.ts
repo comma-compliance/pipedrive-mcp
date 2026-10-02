@@ -148,6 +148,13 @@ describe("resolveOptionValue", () => {
       expect(resolveOptionValue(setField, "200,999")).toBeNull();
     });
 
+    it("rejects empty comma segments instead of clearing the field", () => {
+      expect(resolveOptionValue(setField, ",")).toBeNull();
+      expect(resolveOptionValue(setField, "200,")).toBeNull();
+      expect(resolveOptionValue(setField, "200,,201")).toBeNull();
+      expect(resolveOptionValue(setField, "")).toBeNull();
+    });
+
     it("returns null if any element in array is invalid", () => {
       expect(resolveOptionValue(setField, ["Advisor", "Nonexistent"])).toBeNull();
     });
