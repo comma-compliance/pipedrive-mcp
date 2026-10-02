@@ -1,23 +1,33 @@
 import { z } from "zod";
 
-const ConfigSchema = z.object({
-  apiToken: z.string().min(1, "PIPEDRIVE_API_TOKEN is required"),
-  companyDomain: z.string().min(1, "PIPEDRIVE_COMPANY_DOMAIN is required"),
-  transport: z.enum(["stdio", "sse"]).default("stdio"),
-  sseHost: z.string().default("0.0.0.0"),
-  ssePort: z.coerce.number().int().positive().default(3100),
-  requestTimeoutMs: z.coerce.number().int().positive().default(30000),
-  defaultLimit: z.coerce.number().int().positive().max(100).default(25),
-  maxLimit: z.coerce.number().int().positive().max(500).default(100),
-  rateLimitGeneralPer2s: z.coerce.number().int().positive().default(8),
-  rateLimitSearchPer2s: z.coerce.number().int().positive().default(4),
-  fieldCacheTtlMs: z.coerce.number().int().positive().default(300000),
-  enableWriteTools: z
-    .string()
-    .transform((v) => v.toLowerCase() !== "false")
-    .default("true"),
-  logLevel: z.enum(["debug", "info", "warn", "error"]).default("info"),
-});
+export const ConfigSchema = z
+  .object({
+    apiToken: z.string().min(1).optional(),
+    oauthToken: z.string().min(1).optional(),
+    companyDomain: z.string().min(1, "PIPEDRIVE_COMPANY_DOMAIN is required"),
+    transport: z.enum(["stdio", "sse"]).default("stdio"),
+    sseHost: z.string().default("0.0.0.0"),
+    ssePort: z.coerce.number().int().positive().default(3100),
+    requestTimeoutMs: z.coerce.number().int().positive().default(30000),
+    defaultLimit: z.coerce.number().int().positive().max(100).default(25),
+    maxLimit: z.coerce.number().int().positive().max(500).default(100),
+    rateLimitGeneralPer2s: z.coerce.number().int().positive().default(8),
+    rateLimitSearchPer2s: z.coerce.number().int().positive().default(4),
+    fieldCacheTtlMs: z.coerce.number().int().positive().default(300000),
+    enableWriteTools: z
+      .string()
+      .transform((v) => v.toLowerCase() !== "false")
+      .default("true"),
+    logLevel: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  })
+  .refine(
+    (cfg) => Boolean(cfg.apiToken) !== Boolean(cfg.oauthToken),
+    {
+      message:
+        "Set exactly one of PIPEDRIVE_API_TOKEN or PIPEDRIVE_OAUTH_TOKEN (not both, not neither)",
+      path: ["apiToken"],
+    },
+  );
 
 export type Config = z.infer<typeof ConfigSchema>;
 
@@ -28,6 +38,7 @@ export function loadConfig(): Config {
 
   const result = ConfigSchema.safeParse({
     apiToken: process.env.PIPEDRIVE_API_TOKEN,
+    oauthToken: process.env.PIPEDRIVE_OAUTH_TOKEN,
     companyDomain: process.env.PIPEDRIVE_COMPANY_DOMAIN,
     transport: process.env.PIPEDRIVE_TRANSPORT,
     sseHost: process.env.PIPEDRIVE_SSE_HOST,

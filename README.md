@@ -44,6 +44,26 @@ Find your API token in Pipedrive under **Settings > Personal preferences > API**
 
 Your company domain is the subdomain in your Pipedrive URL (e.g. `yourcompany` for `yourcompany.pipedrive.com`).
 
+### OAuth mode
+
+If your deployment uses Pipedrive OAuth, set `PIPEDRIVE_OAUTH_TOKEN` instead of `PIPEDRIVE_API_TOKEN`:
+
+```
+PIPEDRIVE_OAUTH_TOKEN=your-oauth-access-token
+PIPEDRIVE_COMPANY_DOMAIN=yourcompany
+```
+
+In OAuth mode, the server authenticates with `Authorization: Bearer <token>` instead of the `api_token` query parameter. Set exactly one of `PIPEDRIVE_API_TOKEN` or `PIPEDRIVE_OAUTH_TOKEN`, not both.
+
+**Important: token lifecycle is not managed by this server.** Pipedrive OAuth access tokens expire (typically after 1 hour). This server does not perform the OAuth authorization flow, does not store refresh tokens, and does not refresh expired access tokens. The hosting application is responsible for:
+
+1. Performing the initial OAuth authorization flow with Pipedrive
+2. Storing the resulting access token and refresh token
+3. Detecting 401 responses and refreshing the access token before retrying
+4. Supplying a currently-valid access token to this server via `PIPEDRIVE_OAUTH_TOKEN`
+
+If you want the server to manage its own lifetime, use `PIPEDRIVE_API_TOKEN` instead, personal API tokens don't expire.
+
 ### Optional settings
 
 | Variable | Default | Description |
