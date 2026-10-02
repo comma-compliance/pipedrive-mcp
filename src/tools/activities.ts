@@ -172,8 +172,8 @@ async function handleActivityTypesList(args: Record<string, unknown>): Promise<T
 const tools: ToolDefinition[] = [
   { name: "pipedrive_activities_list", description: "List activities with filters and pagination.", inputSchema: zodToJsonSchema(ActivitiesListSchema), handler: handleActivitiesList },
   { name: "pipedrive_activities_get", description: "Get a single activity by ID.", inputSchema: zodToJsonSchema(ActivitiesGetSchema), handler: handleActivitiesGet },
-  { name: "pipedrive_activities_create", description: "Create a new activity (call, meeting, task, etc).", inputSchema: zodToJsonSchema(ActivitiesCreateSchema), handler: handleActivitiesCreate },
-  { name: "pipedrive_activities_update", description: "Update an existing activity.", inputSchema: zodToJsonSchema(ActivitiesUpdateSchema), handler: handleActivitiesUpdate },
+  { name: "pipedrive_activities_create", description: "Create a new activity (call, meeting, task, etc). The note field, if supplied, is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(ActivitiesCreateSchema), handler: handleActivitiesCreate },
+  { name: "pipedrive_activities_update", description: "Update an existing activity. The note field, if supplied, is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(ActivitiesUpdateSchema), handler: handleActivitiesUpdate },
   { name: "pipedrive_activities_mark_done", description: "Mark an activity as done or undone.", inputSchema: zodToJsonSchema(ActivitiesMarkDoneSchema), handler: handleActivitiesMarkDone },
   { name: "pipedrive_activities_delete", description: 'Delete an activity. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(ActivitiesDeleteSchema), handler: handleActivitiesDelete },
   { name: "pipedrive_activity_types_list", description: "List all available activity types.", inputSchema: { type: "object", properties: {} }, handler: handleActivityTypesList },
