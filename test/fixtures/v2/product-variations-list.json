@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 201,
+      "name": "Power (Annual)",
+      "product_id": 29,
+      "prices": [
+        { "product_variation_id": 201, "price": 768, "currency": "USD", "cost": 537.6, "direct_cost": 0, "notes": "" }
+      ]
+    },
+    {
+      "id": 202,
+      "name": "Premium (Annual)",
+      "product_id": 29,
+      "prices": [
+        { "product_variation_id": 202, "price": 1188, "currency": "USD", "cost": 831.6, "direct_cost": 0, "notes": "" }
+      ]
+    }
+  ],
+  "additional_data": { "next_cursor": null }
+}

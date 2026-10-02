@@ -83,7 +83,6 @@ async function handleOrgsSearch(args: Record<string, unknown>): Promise<ToolResu
   const params: Record<string, string | number | boolean | undefined> = { term: input.term, ...paginationParams };
   if (input.fields) params.fields = input.fields;
   if (input.exact_match !== undefined) params.exact_match = input.exact_match;
-  if (input.include_fields) params.include_fields = input.include_fields.join(",");
 
   const response = await rateLimiters.search.schedule(() =>
     withRetry(() => apiV2.list<Record<string, unknown>>("/organizations/search", params), { label: "pipedrive_organizations_search" }),

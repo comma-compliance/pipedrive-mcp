@@ -11,6 +11,8 @@ import {
   ProductsListSchema, ProductsGetSchema, ProductsCreateSchema, ProductsUpdateSchema,
   ProductsDeleteSchema, ProductsSearchSchema,
   DealProductsListSchema, DealProductsAddSchema, DealProductsUpdateSchema, DealProductsDeleteSchema,
+  ProductVariationsListSchema, ProductVariationsCreateSchema, ProductVariationsUpdateSchema, ProductVariationsDeleteSchema,
+  ProductDealsListSchema,
 } from "../schemas/products.js";
 import { zodToJsonSchema } from "../schemas/zod-to-json.js";
 
@@ -200,6 +202,7 @@ async function handleDealProductsAdd(args: Record<string, unknown>): Promise<Too
   if (input.discount !== undefined) body.discount = input.discount;
   if (input.tax_method) body.tax_method = input.tax_method;
   if (input.comments) body.comments = input.comments;
+  if (input.product_variation_id !== undefined) body.product_variation_id = input.product_variation_id;
 
   const response = await rateLimiters.general.schedule(() =>
     withRetry(() => apiV2.post<Record<string, unknown>>(`/deals/${input.deal_id}/products`, body), { label: `pipedrive_deal_products_add ${input.deal_id}` }),
@@ -220,6 +223,7 @@ async function handleDealProductsUpdate(args: Record<string, unknown>): Promise<
   if (input.discount !== undefined) body.discount = input.discount;
   if (input.tax_method) body.tax_method = input.tax_method;
   if (input.comments) body.comments = input.comments;
+  if (input.product_variation_id !== undefined) body.product_variation_id = input.product_variation_id;
 
   const response = await rateLimiters.general.schedule(() =>
     withRetry(() => apiV2.patch<Record<string, unknown>>(`/deals/${input.deal_id}/products/${input.deal_product_id}`, body), { label: `pipedrive_deal_products_update ${input.deal_product_id}` }),
@@ -244,6 +248,95 @@ async function handleDealProductsDelete(args: Record<string, unknown>): Promise<
   return successResult({ message: `Product ${input.deal_product_id} removed from deal ${input.deal_id}` });
 }
 
+async function handleProductVariationsList(args: Record<string, unknown>): Promise<ToolResult> {
+  const parsed = ProductVariationsListSchema.safeParse(args);
+  if (!parsed.success) return validationErrorResult("pipedrive_product_variations_list", parsed.error.message);
+
+  const { apiV2, rateLimiters, config } = getContext();
+  const input = parsed.data;
+  const limit = Math.min(input.limit ?? config.defaultLimit, config.maxLimit);
+  const paginationParams = buildPaginationParams("cursor", limit, input.cursor);
+
+  const response = await rateLimiters.general.schedule(() =>
+    withRetry(() => apiV2.list<Record<string, unknown>>(`/products/${input.product_id}/variations`, paginationParams), { label: `pipedrive_product_variations_list ${input.product_id}` }),
+  );
+  if (response.status !== 200) return apiErrorResult(normalizeApiError(response, "pipedrive_product_variations_list", `GET /products/${input.product_id}/variations`));
+  const items = response.data.data ?? [];
+  const result = buildPaginatedResult(items, "cursor", response.data as unknown as Record<string, unknown>);
+  const compact = result.items.map((v) => ({ id: v.id, name: v.name, product_id: v.product_id, prices: v.prices }));
+  return paginatedResult({ items: compact, next_page_token: result.next_page_token, approx_count: result.approx_count, truncated: result.truncated, pagination_mode: result.pagination_mode });
+}
+
+async function handleProductVariationsCreate(args: Record<string, unknown>): Promise<ToolResult> {
+  const parsed = ProductVariationsCreateSchema.safeParse(args);
+  if (!parsed.success) return validationErrorResult("pipedrive_product_variations_create", parsed.error.message);
+
+  const { apiV2, rateLimiters } = getContext();
+  const input = parsed.data;
+  const body: Record<string, unknown> = { name: input.name };
+  if (input.prices) body.prices = input.prices;
+
+  const response = await rateLimiters.general.schedule(() =>
+    withRetry(() => apiV2.post<Record<string, unknown>>(`/products/${input.product_id}/variations`, body), { label: `pipedrive_product_variations_create ${input.product_id}` }),
+  );
+  if (response.status !== 200 && response.status !== 201) return apiErrorResult(normalizeApiError(response, "pipedrive_product_variations_create", `POST /products/${input.product_id}/variations`));
+  return successResult({ message: `Variation created on product ${input.product_id}`, variation: response.data.data });
+}
+
+async function handleProductVariationsUpdate(args: Record<string, unknown>): Promise<ToolResult> {
+  const parsed = ProductVariationsUpdateSchema.safeParse(args);
+  if (!parsed.success) return validationErrorResult("pipedrive_product_variations_update", parsed.error.message);
+
+  const { apiV2, rateLimiters } = getContext();
+  const input = parsed.data;
+  const body: Record<string, unknown> = {};
+  if (input.name !== undefined) body.name = input.name;
+  if (input.prices) body.prices = input.prices;
+
+  const response = await rateLimiters.general.schedule(() =>
+    withRetry(() => apiV2.patch<Record<string, unknown>>(`/products/${input.product_id}/variations/${input.product_variation_id}`, body), { label: `pipedrive_product_variations_update ${input.product_variation_id}` }),
+  );
+  if (response.status !== 200) return apiErrorResult(normalizeApiError(response, "pipedrive_product_variations_update", `PATCH /products/${input.product_id}/variations/${input.product_variation_id}`));
+  return successResult({ message: `Variation ${input.product_variation_id} updated`, variation: response.data.data });
+}
+
+async function handleProductVariationsDelete(args: Record<string, unknown>): Promise<ToolResult> {
+  const parsed = ProductVariationsDeleteSchema.safeParse(args);
+  if (!parsed.success) return validationErrorResult("pipedrive_product_variations_delete", parsed.error.message);
+  const input = parsed.data;
+  if (input.dry_run) return successResult(buildDryRunResult("pipedrive_product_variations_delete", "delete", { product_id: input.product_id, product_variation_id: input.product_variation_id }, `Would delete variation ${input.product_variation_id} from product ${input.product_id}`));
+  const confirmError = validateConfirmation(input.confirm, "DELETE", "pipedrive_product_variations_delete", "delete product variation");
+  if (confirmError) return guardErrorResult(confirmError);
+
+  const { apiV2, rateLimiters } = getContext();
+  const response = await rateLimiters.general.schedule(() =>
+    withRetry(() => apiV2.del(`/products/${input.product_id}/variations/${input.product_variation_id}`), { label: `pipedrive_product_variations_delete ${input.product_variation_id}` }),
+  );
+  if (response.status !== 200) return apiErrorResult(normalizeApiError(response, "pipedrive_product_variations_delete", `DELETE /products/${input.product_id}/variations/${input.product_variation_id}`));
+  return successResult({ message: `Variation ${input.product_variation_id} deleted from product ${input.product_id}` });
+}
+
+async function handleProductDealsList(args: Record<string, unknown>): Promise<ToolResult> {
+  const parsed = ProductDealsListSchema.safeParse(args);
+  if (!parsed.success) return validationErrorResult("pipedrive_product_deals_list", parsed.error.message);
+
+  const { apiV1, rateLimiters, config } = getContext();
+  const input = parsed.data;
+  const limit = Math.min(input.limit ?? config.defaultLimit, config.maxLimit);
+  const paginationParams = buildPaginationParams("offset", limit, input.cursor);
+  const params: Record<string, string | number | boolean | undefined> = { ...paginationParams };
+  if (input.status) params.status = input.status;
+
+  const response = await rateLimiters.general.schedule(() =>
+    withRetry(() => apiV1.list<Record<string, unknown>>(`/products/${input.product_id}/deals`, params), { label: `pipedrive_product_deals_list ${input.product_id}` }),
+  );
+  if (response.status !== 200) return apiErrorResult(normalizeApiError(response, "pipedrive_product_deals_list", `GET /products/${input.product_id}/deals`));
+  const items = response.data.data ?? [];
+  const result = buildPaginatedResult(items, "offset", response.data as unknown as Record<string, unknown>);
+  const compact = result.items.map((d) => ({ id: d.id, title: d.title, status: d.status }));
+  return paginatedResult({ items: compact, next_page_token: result.next_page_token, approx_count: result.approx_count, truncated: result.truncated, pagination_mode: result.pagination_mode });
+}
+
 const tools: ToolDefinition[] = [
   { name: "pipedrive_products_list", description: "List products with filters and pagination.", inputSchema: zodToJsonSchema(ProductsListSchema), handler: handleProductsList },
   { name: "pipedrive_products_get", description: "Get a single product by ID.", inputSchema: zodToJsonSchema(ProductsGetSchema), handler: handleProductsGet },
@@ -255,6 +348,11 @@ const tools: ToolDefinition[] = [
   { name: "pipedrive_deal_products_add", description: "Attach a product to a deal with price/quantity.", inputSchema: zodToJsonSchema(DealProductsAddSchema), handler: handleDealProductsAdd },
   { name: "pipedrive_deal_products_update", description: "Update a product attachment on a deal.", inputSchema: zodToJsonSchema(DealProductsUpdateSchema), handler: handleDealProductsUpdate },
   { name: "pipedrive_deal_products_delete", description: 'Remove a product from a deal. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(DealProductsDeleteSchema), handler: handleDealProductsDelete },
+  { name: "pipedrive_product_variations_list", description: "List a product's variations (id, name, prices).", inputSchema: zodToJsonSchema(ProductVariationsListSchema), handler: handleProductVariationsList },
+  { name: "pipedrive_product_variations_create", description: "Add a variation to a product.", inputSchema: zodToJsonSchema(ProductVariationsCreateSchema), handler: handleProductVariationsCreate },
+  { name: "pipedrive_product_variations_update", description: "Update a product variation's name or prices.", inputSchema: zodToJsonSchema(ProductVariationsUpdateSchema), handler: handleProductVariationsUpdate },
+  { name: "pipedrive_product_variations_delete", description: 'Delete a product variation. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(ProductVariationsDeleteSchema), handler: handleProductVariationsDelete },
+  { name: "pipedrive_product_deals_list", description: "List deals a product is attached to, optionally filtered by status.", inputSchema: zodToJsonSchema(ProductDealsListSchema), handler: handleProductDealsList },
 ];
 
 registerTools(tools);

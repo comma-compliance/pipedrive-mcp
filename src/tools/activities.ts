@@ -176,7 +176,7 @@ const tools: ToolDefinition[] = [
   { name: "pipedrive_activities_update", description: "Update an existing activity. The note field, if supplied, is plain HTML, passed directly with no CDATA wrapper.", inputSchema: zodToJsonSchema(ActivitiesUpdateSchema), handler: handleActivitiesUpdate },
   { name: "pipedrive_activities_mark_done", description: "Mark an activity as done or undone.", inputSchema: zodToJsonSchema(ActivitiesMarkDoneSchema), handler: handleActivitiesMarkDone },
   { name: "pipedrive_activities_delete", description: 'Delete an activity. Requires confirm: "DELETE". Supports dry_run.', inputSchema: zodToJsonSchema(ActivitiesDeleteSchema), handler: handleActivitiesDelete },
-  { name: "pipedrive_activity_types_list", description: "List all available activity types.", inputSchema: { type: "object", properties: {} }, handler: handleActivityTypesList },
+  { name: "pipedrive_activity_types_list", description: "List the activity type key_strings configured for this workspace. Call this before creating an activity if you aren't sure which 'type' values are valid.", inputSchema: { type: "object", properties: {} }, handler: handleActivityTypesList },
 ];
 
 registerTools(tools);
