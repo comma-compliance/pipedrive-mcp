@@ -33,7 +33,7 @@ export const DealsListSchema = z.object({
   updated_until: UpdatedUntilSchema,
   cursor: PageTokenSchema,
   limit: LimitSchema,
-  sort_by: z.enum(["id", "update_time", "add_time", "title", "value"]).optional().describe("Field to sort by"),
+  sort_by: z.enum(["id", "update_time", "add_time"]).optional().describe("Field to sort by"),
   sort_direction: SortDirectionSchema,
   include_fields: IncludeFieldsSchema,
   custom_field_keys: CustomFieldKeysSchema,
