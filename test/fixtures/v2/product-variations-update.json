@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "data": {
+    "id": 203,
+    "name": "Premium Plus (Annual)",
+    "product_id": 29,
+    "prices": [
+      { "product_variation_id": 203, "price": 1288, "currency": "USD", "cost": 0, "direct_cost": 0, "notes": "" }
+    ]
+  }
+}

@@ -99,6 +99,7 @@ export const DealProductsAddSchema = z.object({
   discount: z.number().optional(),
   tax_method: z.enum(["exclusive", "inclusive", "none"]).optional(),
   comments: z.string().optional(),
+  product_variation_id: z.coerce.number().int().positive().optional().describe("Optional product variation ID (from pipedrive_product_variations_list)"),
 }).strict();
 
 export const DealProductsUpdateSchema = z.object({
@@ -109,6 +110,7 @@ export const DealProductsUpdateSchema = z.object({
   discount: z.number().optional(),
   tax_method: z.enum(["exclusive", "inclusive", "none"]).optional(),
   comments: z.string().optional(),
+  product_variation_id: z.coerce.number().int().positive().optional().describe("Optional product variation ID (from pipedrive_product_variations_list)"),
 }).strict();
 
 export const DealProductsDeleteSchema = z.object({
@@ -117,4 +119,50 @@ export const DealProductsDeleteSchema = z.object({
   confirm: ConfirmDeleteSchema,
   dry_run: DryRunSchema,
   reason: ReasonSchema,
+}).strict();
+
+// Product variations live on a v2 product (GET/POST /products/{id}/variations,
+// PATCH/DELETE /products/{id}/variations/{product_variation_id}).
+const VariationPriceSchema = z.object({
+  price: z.number(),
+  currency: z.string(),
+  cost: z.number().optional(),
+  direct_cost: z.number().optional(),
+  notes: z.string().optional(),
+});
+
+export const ProductVariationsListSchema = z.object({
+  product_id: IdSchema.describe("The product ID whose variations to list"),
+  cursor: PageTokenSchema,
+  limit: LimitSchema,
+}).strict();
+
+export const ProductVariationsCreateSchema = z.object({
+  product_id: IdSchema.describe("The product ID to add a variation to"),
+  name: z.string().min(1).max(255).describe("The name of the product variation"),
+  prices: z.array(VariationPriceSchema).optional().describe("Variation prices. If omitted, defaults to price/cost 0 in the user's default currency"),
+}).strict();
+
+export const ProductVariationsUpdateSchema = z.object({
+  product_id: IdSchema.describe("The product ID the variation belongs to"),
+  product_variation_id: IdSchema.describe("The product variation ID to update"),
+  name: z.string().min(1).max(255).optional().describe("The name of the product variation"),
+  prices: z.array(VariationPriceSchema).optional().describe("Variation prices"),
+}).strict();
+
+export const ProductVariationsDeleteSchema = z.object({
+  product_id: IdSchema.describe("The product ID the variation belongs to"),
+  product_variation_id: IdSchema.describe("The product variation ID to delete"),
+  confirm: ConfirmDeleteSchema,
+  dry_run: DryRunSchema,
+  reason: ReasonSchema,
+}).strict();
+
+// Deals a product is attached to. v1-only endpoint (GET /v1/products/{id}/deals),
+// uses offset (start/limit) pagination and a status filter.
+export const ProductDealsListSchema = z.object({
+  product_id: IdSchema.describe("The product ID to find attached deals for"),
+  cursor: PageTokenSchema,
+  limit: LimitSchema,
+  status: z.enum(["open", "won", "lost", "deleted", "all_not_deleted"]).optional().describe("Only fetch deals with a specific status. Defaults to all not deleted"),
 }).strict();

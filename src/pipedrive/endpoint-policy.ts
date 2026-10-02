@@ -94,6 +94,11 @@ const policies: Record<string, EndpointPolicy> = {
   "dealProducts.add": { version: "v2", method: "POST", path: "/deals/:id/products", pagination: "none" },
   "dealProducts.update": { version: "v2", method: "PATCH", path: "/deals/:dealId/products/:id", pagination: "none" },
   "dealProducts.delete": { version: "v2", method: "DELETE", path: "/deals/:dealId/products/:id", pagination: "none" },
+  "productVariations.list": { version: "v2", method: "GET", path: "/products/:id/variations", pagination: "cursor" },
+  "productVariations.create": { version: "v2", method: "POST", path: "/products/:id/variations", pagination: "none" },
+  "productVariations.update": { version: "v2", method: "PATCH", path: "/products/:productId/variations/:id", pagination: "none" },
+  "productVariations.delete": { version: "v2", method: "DELETE", path: "/products/:productId/variations/:id", pagination: "none" },
+  "productDeals.list": { version: "v1", method: "GET", path: "/products/:id/deals", pagination: "offset" },
 
   // Files (v1)
   "files.list": { version: "v1", method: "GET", path: "/files", pagination: "offset" },
