@@ -184,3 +184,15 @@ describe("Activities type field", () => {
     ).toBe(false);
   });
 });
+
+describe("include_fields JSON schema", () => {
+  it("keeps a description alongside the enum for tool callers", async () => {
+    const { zodToJsonSchema } = await import("../../../src/schemas/zod-to-json.js");
+    const { DealsListSchema } = await import("../../../src/schemas/deals.js");
+    const { PersonsListSchema } = await import("../../../src/schemas/persons.js");
+    for (const schema of [DealsListSchema, PersonsListSchema]) {
+      const props = zodToJsonSchema(schema).properties as Record<string, Record<string, unknown>>;
+      expect(props.include_fields.description).toMatch(/Additional fields/);
+    }
+  });
+});
