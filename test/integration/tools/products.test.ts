@@ -83,6 +83,11 @@ describe("pipedrive_product_variations_update", () => {
   });
 
   it("rejects an update with no fields without calling the API", async () => {
+    const scope = nock(BASE_URL)
+      .patch("/api/v2/products/29/variations/203")
+      .query(true)
+      .reply(200, {});
+
     const { result } = await callTool("pipedrive_product_variations_update", {
       product_id: 29,
       product_variation_id: 203,
@@ -90,6 +95,7 @@ describe("pipedrive_product_variations_update", () => {
 
     expect(result.isError).toBe(true);
     expect(JSON.stringify(result.content)).toContain("Provide name or prices");
+    expect(scope.isDone()).toBe(false);
   });
 });
 
