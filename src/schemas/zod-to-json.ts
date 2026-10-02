@@ -9,6 +9,16 @@ export function zodToJsonSchema(schema: ZodType): Record<string, unknown> {
 
 function convertZodType(schema: ZodType): Record<string, unknown> {
   const def = (schema as unknown as { _def: Record<string, unknown> })._def;
+  const result = convertByType(def);
+  // Wrappers like .optional().describe(...) carry the description on the
+  // wrapper, not the inner type - keep it, or tool callers never see it
+  if (def.description && result.description === undefined) {
+    result.description = String(def.description);
+  }
+  return result;
+}
+
+function convertByType(def: Record<string, unknown>): Record<string, unknown> {
   const typeName = def.typeName as string;
 
   switch (typeName) {
